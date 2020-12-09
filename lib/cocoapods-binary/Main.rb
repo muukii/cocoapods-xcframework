@@ -12,6 +12,10 @@ module Pod
                 DSL.prebuild_all = true
             end
 
+            def use_xcframework!
+                DSL.use_xcframework = true
+            end
+
             # Enable bitcode for prebuilt frameworks
             def enable_bitcode_for_prebuilt_frameworks!
                 DSL.bitcode_enabled = true
@@ -58,6 +62,9 @@ module Pod
             private
             class_attr_accessor :prebuild_all
             prebuild_all = false
+
+            class_attr_accessor :use_xcframework
+            use_xcframework = false
 
             class_attr_accessor :bitcode_enabled
             bitcode_enabled = false
