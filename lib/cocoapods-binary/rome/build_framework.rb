@@ -10,25 +10,25 @@ PLATFORMS = { 'iphonesimulator' => 'iOS',
 #  @param [PodTarget] target
 #         a specific pod target
 #
-def build_for_iosish_platform(sandbox, 
-                              build_dir, 
-                              output_path,
-                              target, 
-                              device, 
-                              simulator,
-                              bitcode_enabled,
-                              build_xcframework,
-                              custom_build_options = [], # Array<String>
-                              custom_build_options_simulator = [] # Array<String>
-                              )
+def build_for_iosish_platform(
+  sandbox, 
+  build_dir, 
+  output_path,
+  target, 
+  device, 
+  simulator,
+  bitcode_enabled,
+  build_xcframework,
+  custom_build_options = [], # Array<String>
+  custom_build_options_simulator = [] # Array<String>
+)
 
   deployment_target = target.platform.deployment_target.to_s
   target_label = target.label # name with platform if it's used in multiple platforms
 
-  Pod::UI.puts "Prebuilding #{target_label}..."
-  
   if build_xcframework
 
+    Pod::UI.puts "Prebuilding #{target_label}... as XCFramework"  
     other_options = []
     # bitcode enabled
     other_options += ['BITCODE_GENERATION_MODE=bitcode'] if bitcode_enabled
@@ -40,7 +40,7 @@ def build_for_iosish_platform(sandbox,
       scheme: target_label,
       sdk: device,
       deployment_target: deployment_target,
-      other_options: other_options
+      other_options: other_options + custom_build_options
     )
 
     xcodebuild(
@@ -48,7 +48,7 @@ def build_for_iosish_platform(sandbox,
       scheme: target_label,
       sdk: simulator,
       deployment_target: deployment_target,
-      other_options: other_options
+      other_options: other_options + custom_build_options_simulator
     )
 
     # paths
@@ -58,41 +58,36 @@ def build_for_iosish_platform(sandbox,
     device_lib = "#{build_dir}/#{CONFIGURATION}-#{device}/#{target_name}/#{module_name}.framework"
     simulator_lib = "#{build_dir}/#{CONFIGURATION}-#{simulator}/#{target_name}/#{module_name}.framework"
 
-    create_xcframework([device_lib, simulator_lib], build_dir, module_name)    
+    create_xcframework([device_lib, simulator_lib], output_path, module_name)    
 
     FileUtils.rm device_lib if File.file?(device_lib)
     FileUtils.rm simulator_lib if File.file?(simulator_lib)
+
   else
 
-    other_options = []
-    # bitcode enabled
-    other_options += ['BITCODE_GENERATION_MODE=bitcode'] if bitcode_enabled
-  
-    other_options += ['BUILD_LIBRARY_FOR_DISTRIBUTION=true'] if build_xcframework
-  
-    # make less arch to iphone simulator for faster build
-    other_options += ['ARCHS=x86_64', 'ONLY_ACTIVE_ARCH=NO'] if simulator == 'iphonesimulator'
+    Pod::UI.puts "Prebuilding #{target_label}... as Universal Framework"
 
     other_options = []
     # bitcode enabled
     other_options += ['BITCODE_GENERATION_MODE=bitcode'] if bitcode_enabled
-  
-    other_options += ['BUILD_LIBRARY_FOR_DISTRIBUTION=true'] if build_xcframework
 
     xcodebuild(
       sandbox: sandbox,
       scheme: target_label,
       sdk: device,
       deployment_target: deployment_target,
-      other_options: other_options
+      other_options: other_options + custom_build_options
     )
+
+    # make less arch to iphone simulator for faster build
+    other_options += ["ARCHS=x86_64", "ONLY_ACTIVE_ARCH=NO"] if simulator == "iphonesimulator"
 
     xcodebuild(
       sandbox: sandbox,
       scheme: target_label,
       sdk: simulator,
       deployment_target: deployment_target,
-      other_options: other_options
+      other_options: other_options + custom_build_options_simulator
     )
 
     # paths
@@ -101,14 +96,14 @@ def build_for_iosish_platform(sandbox,
 
     device_lib = "#{build_dir}/#{CONFIGURATION}-#{device}/#{target_name}/#{module_name}.framework"
     simulator_lib = "#{build_dir}/#{CONFIGURATION}-#{simulator}/#{target_name}/#{module_name}.framework"
-  
-    executable_path = "#{build_dir}/#{target_name}"
 
     create_universal_framework(
       device_lib, 
       simulator_lib,
       build_dir,
-      module_name
+      target_name,
+      module_name,
+      output_path
     )
     
   end
@@ -138,11 +133,17 @@ def create_xcframework(frameworks, destination, module_name)
   Pod::Executable.execute_command 'xcodebuild', args, true
 end
 
-def create_universal_framework(device_lib, simulator_lib, build_dir, module_name)
+def create_universal_framework(device_lib, simulator_lib, build_dir, target_name, module_name, output_path)
 
   device_binary = device_lib + "/#{module_name}"
   simulator_binary = simulator_lib + "/#{module_name}"
-  return unless File.file?(device_binary) && File.file?(simulator_binary)
+
+  Pod::UI.puts "#{device_binary} #{simulator_binary}"
+
+  unless File.file?(device_binary) && File.file?(simulator_binary)
+    Pod::UI.puts "Binary not found"
+    return
+  end
 
   # the device_lib path is the final output file path
   # combine the binaries
@@ -152,8 +153,8 @@ def create_universal_framework(device_lib, simulator_lib, build_dir, module_name
   FileUtils.mv tmp_lipoed_binary_path, device_binary, :force => true
   
   # collect the swiftmodule file for various archs.
-  device_swiftmodule_path = device_framework_path + "/Modules/#{module_name}.swiftmodule"
-  simulator_swiftmodule_path = simulator_framework_path + "/Modules/#{module_name}.swiftmodule"
+  device_swiftmodule_path = device_lib + "/Modules/#{module_name}.swiftmodule"
+  simulator_swiftmodule_path = simulator_lib + "/Modules/#{module_name}.swiftmodule"
   if File.exist?(device_swiftmodule_path)
     FileUtils.cp_r simulator_swiftmodule_path + "/.", device_swiftmodule_path
   end
@@ -161,8 +162,8 @@ def create_universal_framework(device_lib, simulator_lib, build_dir, module_name
   # combine the generated swift headers
   # (In xcode 10.2, the generated swift headers vary for each archs)
   # https://github.com/leavez/cocoapods-binary/issues/58
-  simulator_generated_swift_header_path = simulator_framework_path + "/Headers/#{module_name}-Swift.h"
-  device_generated_swift_header_path = device_framework_path + "/Headers/#{module_name}-Swift.h"
+  simulator_generated_swift_header_path = simulator_lib + "/Headers/#{module_name}-Swift.h"
+  device_generated_swift_header_path = device_lib + "/Headers/#{module_name}-Swift.h"
   if File.exist? simulator_generated_swift_header_path
     device_header = File.read(device_generated_swift_header_path)
     simulator_header = File.read(simulator_generated_swift_header_path)
@@ -182,15 +183,15 @@ def create_universal_framework(device_lib, simulator_lib, build_dir, module_name
   end
 
   # handle the dSYM files
-  device_dsym = "#{device_framework_path}.dSYM"
+  device_dsym = "#{device_lib}.dSYM"
   if File.exist? device_dsym
     # lipo the simulator dsym
-    simulator_dsym = "#{simulator_framework_path}.dSYM"
+    simulator_dsym = "#{simulator_lib}.dSYM"
     if File.exist? simulator_dsym
       tmp_lipoed_binary_path = "#{output_path}/#{module_name}.draft"
       lipo_log = `lipo -create -output #{tmp_lipoed_binary_path} #{device_dsym}/Contents/Resources/DWARF/#{module_name} #{simulator_dsym}/Contents/Resources/DWARF/#{module_name}`
       puts lipo_log unless File.exist?(tmp_lipoed_binary_path)
-      FileUtils.mv tmp_lipoed_binary_path, "#{device_framework_path}.dSYM/Contents/Resources/DWARF/#{module_name}", :force => true
+      FileUtils.mv tmp_lipoed_binary_path, "#{device_lib}.dSYM/Contents/Resources/DWARF/#{module_name}", :force => true
     end
     # move
     FileUtils.mv device_dsym, output_path, :force => true
@@ -198,7 +199,7 @@ def create_universal_framework(device_lib, simulator_lib, build_dir, module_name
 
   # output
   output_path.mkpath unless output_path.exist?
-  FileUtils.mv device_framework_path, output_path, :force => true
+  FileUtils.mv device_lib, output_path, :force => true
 
 end
 
@@ -239,7 +240,7 @@ def xcodebuild(
 end
 
 module Pod
-  class Prebuild
+   class Prebuild
 
     # Build the frameworks with sandbox and targets
     #
@@ -262,31 +263,45 @@ module Pod
 
       # -- build the framework
       case target.platform.name
-      when :ios then build_for_iosish_platform(sandbox, build_dir, output_path, target, 'iphoneos', 'iphonesimulator', bitcode_enabled, custom_build_options, custom_build_options_simulator)
-      when :osx then xcodebuild(sandbox, target.label, 'macosx', nil, custom_build_options)
+      when :ios then 
+        build_for_iosish_platform(
+          sandbox,
+          build_dir,
+          output_path, 
+          target, 
+          'iphoneos', 
+          'iphonesimulator', 
+          bitcode_enabled, 
+          false,
+          custom_build_options, 
+          custom_build_options_simulator
+        )
+      when :osx then
+        xcodebuild(
+          sandbox, 
+          target.label, 
+          'macosx', 
+          nil, 
+          custom_build_options
+        )
       # when :tvos then build_for_iosish_platform(sandbox, build_dir, target, 'appletvos', 'appletvsimulator')
-      when :watchos then build_for_iosish_platform(sandbox, build_dir, output_path, target, 'watchos', 'watchsimulator', true, custom_build_options, custom_build_options_simulator)
+      when :watchos then
+        build_for_iosish_platform(
+          sandbox, 
+          build_dir, 
+          output_path, 
+          target, 
+          'watchos', 
+          'watchsimulator', 
+          true, 
+          false,
+          custom_build_options, 
+          custom_build_options_simulator
+        )
       else raise "Unsupported platform for '#{target.name}': '#{target.platform.name}'" end
     
       raise Pod::Informative, 'The build directory was not found in the expected location.' unless build_dir.directory?
 
-      # # --- copy the vendored libraries and framework
-      # frameworks = build_dir.children.select{ |path| File.extname(path) == ".framework" }
-      # Pod::UI.puts "Built #{frameworks.count} #{'frameworks'.pluralize(frameworks.count)}"
-    
-      # pod_target = target
-      # consumer = pod_target.root_spec.consumer(pod_target.platform.name)
-      # file_accessor = Pod::Sandbox::FileAccessor.new(sandbox.pod_dir(pod_target.pod_name), consumer)
-      # frameworks += file_accessor.vendored_libraries
-      # frameworks += file_accessor.vendored_frameworks
-
-      # frameworks.uniq!
-    
-      # frameworks.each do |framework|
-      #   FileUtils.mkdir_p destination
-      #   FileUtils.cp_r framework, destination, :remove_destination => true
-      # end
-      # build_dir.rmtree if build_dir.directory?
     end
 
     def self.build_xcframework(sandbox_root_path, target, output_path, bitcode_enabled = false, custom_build_options=[], custom_build_options_simulator=[])
@@ -301,10 +316,41 @@ module Pod
 
       # -- build the framework
       case target.platform.name
-      when :ios then build_for_iosish_platform(sandbox, build_dir, output_path, target, 'iphoneos', 'iphonesimulator', bitcode_enabled, custom_build_options, custom_build_options_simulator)
-      when :osx then xcodebuild(sandbox, target.label, 'macosx', nil, custom_build_options)
+      when :ios then 
+        build_for_iosish_platform(
+          sandbox, 
+          build_dir, 
+          output_path,
+          target, 
+          'iphoneos', 
+          'iphonesimulator', 
+          bitcode_enabled, 
+          true,
+          custom_build_options, 
+          custom_build_options_simulator
+        )
+      when :osx then 
+        xcodebuild(
+          sandbox, 
+          target.label, 
+          'macosx', 
+          nil, 
+          custom_build_options
+        )
       # when :tvos then build_for_iosish_platform(sandbox, build_dir, target, 'appletvos', 'appletvsimulator')
-      when :watchos then build_for_iosish_platform(sandbox, build_dir, output_path, target, 'watchos', 'watchsimulator', true, custom_build_options, custom_build_options_simulator)
+      when :watchos then 
+        build_for_iosish_platform(
+          sandbox, 
+          build_dir, 
+          output_path, 
+          target, 
+          'watchos', 
+          'watchsimulator',
+          true,           
+          true,
+          custom_build_options, 
+          custom_build_options_simulator
+        )
       else raise "Unsupported platform for '#{target.name}': '#{target.platform.name}'" end
     
       raise Pod::Informative, 'The build directory was not found in the expected location.' unless build_dir.directory?

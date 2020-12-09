@@ -112,12 +112,6 @@ module Pod
             end
 
             targets = targets.reject {|pod_target| sandbox.local?(pod_target.pod_name) }
-
-            if use_xcframework 
-
-            else
-
-            end
  
             # build!
             Pod::UI.puts "Prebuild frameworks (total #{targets.count})"
@@ -130,10 +124,25 @@ module Pod
 
                 output_path = sandbox.framework_folder_path_for_target_name(target.name)
                 output_path.mkpath unless output_path.exist?
+
                 if use_xcframework
-                Pod::Prebuild.build_xcframework(sandbox_path, target, output_path, bitcode_enabled,  Podfile::DSL.custom_build_options,  Podfile::DSL.custom_build_options_simulator)
+                Pod::Prebuild.build_xcframework(
+                    sandbox_path,
+                    target, 
+                    output_path, 
+                    bitcode_enabled,  
+                    Podfile::DSL.custom_build_options,  
+                    Podfile::DSL.custom_build_options_simulator
+                )
                 else
-                Pod::Prebuild.build(sandbox_path, target, output_path, bitcode_enabled,  Podfile::DSL.custom_build_options,  Podfile::DSL.custom_build_options_simulator)
+                Pod::Prebuild.build(
+                    sandbox_path, 
+                    target, 
+                    output_path, 
+                    bitcode_enabled,  
+                    Podfile::DSL.custom_build_options,  
+                    Podfile::DSL.custom_build_options_simulator
+                )
                 end
 
                 # save the resource paths for later installing
