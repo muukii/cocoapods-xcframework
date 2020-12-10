@@ -3,6 +3,7 @@ plugin 'cocoapods-binary'
 
 use_frameworks!
 all_binary!
+use_xcframework!
 
 target 'demo' do
 
