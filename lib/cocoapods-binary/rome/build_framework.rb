@@ -2,9 +2,11 @@ require 'fourflusher'
 require 'xcpretty'
 
 CONFIGURATION = "Release"
-PLATFORMS = { 'iphonesimulator' => 'iOS',
-              'appletvsimulator' => 'tvOS',
-              'watchsimulator' => 'watchOS' }
+PLATFORMS = { 
+  'iphonesimulator' => 'iOS',
+  'appletvsimulator' => 'tvOS',
+  'watchsimulator' => 'watchOS' 
+}
 
 #  Build specific target to framework file
 #  @param [PodTarget] target
@@ -33,7 +35,9 @@ def build_for_iosish_platform(
     # bitcode enabled
     other_options += ['BITCODE_GENERATION_MODE=bitcode'] if bitcode_enabled
   
-    other_options += ['BUILD_LIBRARY_FOR_DISTRIBUTION=true'] if build_xcframework
+    other_options += ['BUILD_LIBRARY_FOR_DISTRIBUTION=true']
+
+    other_options += ['SKIP_INSTALL=NO']
 
     xcodebuild(
       sandbox: sandbox,
@@ -121,6 +125,16 @@ def build_for_macos_platform(sandbox, build_dir, target, flags, configuration, b
       build_xcframework([framework], build_dir, module_name)
     end
   end
+end
+
+def enable_debug_information(project_path, configuration)
+  project = Xcodeproj::Project.open(project_path)
+  project.targets.each do |target|
+    config = target.build_configurations.find { |config| config.name.eql? configuration }
+    config.build_settings["DEBUG_INFORMATION_FORMAT"] = "dwarf-with-dsym"
+    config.build_settings["ONLY_ACTIVE_ARCH"] = "NO"
+  end
+  project.save
 end
 
 def create_xcframework(frameworks, destination, module_name)
@@ -261,6 +275,8 @@ module Pod
       sandbox = Pod::Sandbox.new(sandbox_root)
       build_dir = self.build_dir(sandbox_root)
 
+      enable_debug_information(sandbox.project_path, CONFIGURATION)
+
       # -- build the framework
       case target.platform.name
       when :ios then 
@@ -355,28 +371,11 @@ module Pod
     
       raise Pod::Informative, 'The build directory was not found in the expected location.' unless build_dir.directory?
 
-      # # --- copy the vendored libraries and framework
-      # frameworks = build_dir.children.select{ |path| File.extname(path) == ".framework" }
-      # Pod::UI.puts "Built #{frameworks.count} #{'frameworks'.pluralize(frameworks.count)}"
-    
-      # pod_target = target
-      # consumer = pod_target.root_spec.consumer(pod_target.platform.name)
-      # file_accessor = Pod::Sandbox::FileAccessor.new(sandbox.pod_dir(pod_target.pod_name), consumer)
-      # frameworks += file_accessor.vendored_libraries
-      # frameworks += file_accessor.vendored_frameworks
-
-      # frameworks.uniq!
-    
-      # frameworks.each do |framework|
-      #   FileUtils.mkdir_p destination
-      #   FileUtils.cp_r framework, destination, :remove_destination => true
-      # end
-      # build_dir.rmtree if build_dir.directory?
     end
     
     def self.remove_build_dir(sandbox_root)
       path = build_dir(sandbox_root)
-      # path.rmtree if path.exist?
+      path.rmtree if path.exist?
     end
 
     private 

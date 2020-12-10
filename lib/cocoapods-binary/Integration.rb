@@ -70,7 +70,7 @@ module Pod
                     walk(real_file_folder) do |child|
                         source = child
                         # only make symlink to file and `.framework` folder
-                        if child.directory? and [".xcframework", ".framework", ".dSYM"].include? child.extname
+                        if child.directory? and [".framework", ".dSYM"].include? child.extname
                             mirror_with_symlink(source, real_file_folder, target_folder)
                             next false  # return false means don't go deeper
                         elsif child.file?
