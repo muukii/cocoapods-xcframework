@@ -30,10 +30,14 @@ def build_for_iosish_platform(
 
   if build_xcframework
 
-    Pod::UI.puts "Prebuilding #{target_label}... as XCFramework"  
+    Pod::UI.puts "Prebuilding #{target_label}... as XCFramework, bitcode: #{bitcode_enabled ? "YES" : "NO"}"  
     other_options = []
     # bitcode enabled
-    other_options += ['BITCODE_GENERATION_MODE=bitcode'] if bitcode_enabled
+    if bitcode_enabled
+      other_options += ['ENABLE_BITCODE=YES']
+      other_options += ["BITCODE_GENERATION_MODE=bitcode"]
+      other_options += ["OTHER_CFLAGS=-fembed-bitcode"]
+    end
   
     other_options += ['BUILD_LIBRARY_FOR_DISTRIBUTION=true']
 
@@ -63,17 +67,25 @@ def build_for_iosish_platform(
     simulator_lib = "#{build_dir}/#{CONFIGURATION}-#{simulator}/#{target_name}/#{module_name}.framework"
 
     create_xcframework([device_lib, simulator_lib], output_path, module_name)    
+    # copy_dsym_files(sandbox_root.parent + 'dSYM', CONFIGURATION)
 
-    FileUtils.rm device_lib if File.file?(device_lib)
-    FileUtils.rm simulator_lib if File.file?(simulator_lib)
+    dSYM_path = output_path + "#{module_name}.dSYMs"
+
+    dSYM_path.mkpath unless dSYM_path.exist?
+    FileUtils.mv device_lib + ".dSYM", File.join(dSYM_path, "#{device}.dSYM")
+    FileUtils.mv simulator_lib + ".dSYM", File.join(dSYM_path, "#{simulator}.dSYM")
 
   else
 
     Pod::UI.puts "Prebuilding #{target_label}... as Universal Framework"
 
     other_options = []
-    # bitcode enabled
-    other_options += ['BITCODE_GENERATION_MODE=bitcode'] if bitcode_enabled
+
+    if bitcode_enabled
+      other_options += ["ENABLE_BITCODE=YES"]
+      other_options += ["BITCODE_GENERATION_MODE=bitcode"]
+      other_options += ["OTHER_CFLAGS=-fembed-bitcode"]
+    end
 
     xcodebuild(
       sandbox: sandbox,
@@ -267,7 +279,7 @@ module Pod
     #         [Pathname] output_path
     #         output path for generated frameworks
     #
-    def self.build(sandbox_root_path, target, output_path, bitcode_enabled = false, custom_build_options=[], custom_build_options_simulator=[])
+    def self.build(sandbox_root_path, target, output_path, bitcode_enabled, custom_build_options=[], custom_build_options_simulator=[])
     
       return if target.nil?
     
@@ -320,7 +332,7 @@ module Pod
 
     end
 
-    def self.build_xcframework(sandbox_root_path, target, output_path, bitcode_enabled = false, custom_build_options=[], custom_build_options_simulator=[])
+    def self.build_xcframework(sandbox_root_path, target, output_path, bitcode_enabled, custom_build_options=[], custom_build_options_simulator=[])
 
       Pod::UI.puts "Build XCFramework"
     
