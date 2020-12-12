@@ -81,7 +81,7 @@ def build_for_iosish_platform(
 
     # https://steipete.com/posts/couldnt-irgen-expression/
     other_options = [
-      "OTHER_SWIFT_FLAGS='-Xfrontend -no-serialize-debugging-options'"
+      "SWIFT_SERIALIZE_DEBUGGING_OPTIONS=NO"
     ]
 
     if bitcode_enabled
