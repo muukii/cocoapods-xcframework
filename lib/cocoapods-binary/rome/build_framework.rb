@@ -79,7 +79,10 @@ def build_for_iosish_platform(
 
     Pod::UI.puts "Prebuilding #{target_label}... as Universal Framework"
 
-    other_options = []
+    # https://steipete.com/posts/couldnt-irgen-expression/
+    other_options = [
+      "OTHER_SWIFT_FLAGS=-Xfrontend -no-serialize-debugging-options"
+    ]
 
     if bitcode_enabled
       other_options += ["ENABLE_BITCODE=YES"]
