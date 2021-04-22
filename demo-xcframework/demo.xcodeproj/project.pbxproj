@@ -8,14 +8,58 @@
 
 /* Begin PBXBuildFile section */
 		2E1AEA2ADE0B2C6D0E8CB73C /* BDWebImage_demo.m in Sources */ = {isa = PBXBuildFile; fileRef = 89A7B09D8E1B9A5928206B3D /* BDWebImage_demo.m */; };
+		4B374C762631D13500F20A58 /* ModuleA.h in Headers */ = {isa = PBXBuildFile; fileRef = 4B374C742631D13500F20A58 /* ModuleA.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4B374C792631D13500F20A58 /* ModuleA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B374C722631D13500F20A58 /* ModuleA.framework */; };
+		4B374C7A2631D13500F20A58 /* ModuleA.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4B374C722631D13500F20A58 /* ModuleA.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		4B374C892631D13C00F20A58 /* ModuleB.h in Headers */ = {isa = PBXBuildFile; fileRef = 4B374C872631D13C00F20A58 /* ModuleB.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4B374C8C2631D13C00F20A58 /* ModuleB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B374C852631D13C00F20A58 /* ModuleB.framework */; };
+		4B374C8D2631D13C00F20A58 /* ModuleB.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4B374C852631D13C00F20A58 /* ModuleB.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5D8F9A83A7C72EE0DD2E30B3 /* Pods_demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D609230143B5D568D9C4A59C /* Pods_demo.framework */; };
 		8BC2E4C8225F2B8600EC0609 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BC2E4C7225F2B8600EC0609 /* AppDelegate.swift */; };
 		8BC2E4CA225F2B8600EC0609 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BC2E4C9225F2B8600EC0609 /* ViewController.swift */; };
 		8BC2E4D2225F2B8700EC0609 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8BC2E4D0225F2B8700EC0609 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		4B374C772631D13500F20A58 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BC2E4BC225F2B8600EC0609 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4B374C712631D13500F20A58;
+			remoteInfo = ModuleA;
+		};
+		4B374C8A2631D13C00F20A58 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BC2E4BC225F2B8600EC0609 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4B374C842631D13C00F20A58;
+			remoteInfo = ModuleB;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4B374C7B2631D13500F20A58 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				4B374C7A2631D13500F20A58 /* ModuleA.framework in Embed Frameworks */,
+				4B374C8D2631D13C00F20A58 /* ModuleB.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		28E804D524A2FE8E262DC5C8 /* Pods-demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-demo.debug.xcconfig"; path = "Target Support Files/Pods-demo/Pods-demo.debug.xcconfig"; sourceTree = "<group>"; };
+		4B374C722631D13500F20A58 /* ModuleA.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ModuleA.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4B374C742631D13500F20A58 /* ModuleA.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModuleA.h; sourceTree = "<group>"; };
+		4B374C752631D13500F20A58 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4B374C852631D13C00F20A58 /* ModuleB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ModuleB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4B374C872631D13C00F20A58 /* ModuleB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModuleB.h; sourceTree = "<group>"; };
+		4B374C882631D13C00F20A58 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		70BD4C68F86A3E0344BA64E0 /* Pods-demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-demo.release.xcconfig"; path = "Target Support Files/Pods-demo/Pods-demo.release.xcconfig"; sourceTree = "<group>"; };
 		89A7B09D8E1B9A5928206B3D /* BDWebImage_demo.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = BDWebImage_demo.m; sourceTree = "<group>"; };
 		8BC2E4C4225F2B8600EC0609 /* demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -27,10 +71,26 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4B374C6F2631D13500F20A58 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4B374C822631D13C00F20A58 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8BC2E4C1225F2B8600EC0609 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B374C8C2631D13C00F20A58 /* ModuleB.framework in Frameworks */,
+				4B374C792631D13500F20A58 /* ModuleA.framework in Frameworks */,
 				5D8F9A83A7C72EE0DD2E30B3 /* Pods_demo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -47,10 +107,30 @@
 			path = ./demos;
 			sourceTree = "<group>";
 		};
+		4B374C732631D13500F20A58 /* ModuleA */ = {
+			isa = PBXGroup;
+			children = (
+				4B374C742631D13500F20A58 /* ModuleA.h */,
+				4B374C752631D13500F20A58 /* Info.plist */,
+			);
+			path = ModuleA;
+			sourceTree = "<group>";
+		};
+		4B374C862631D13C00F20A58 /* ModuleB */ = {
+			isa = PBXGroup;
+			children = (
+				4B374C872631D13C00F20A58 /* ModuleB.h */,
+				4B374C882631D13C00F20A58 /* Info.plist */,
+			);
+			path = ModuleB;
+			sourceTree = "<group>";
+		};
 		8BC2E4BB225F2B8600EC0609 = {
 			isa = PBXGroup;
 			children = (
 				8BC2E4C6225F2B8600EC0609 /* demo */,
+				4B374C732631D13500F20A58 /* ModuleA */,
+				4B374C862631D13C00F20A58 /* ModuleB */,
 				8BC2E4C5225F2B8600EC0609 /* Products */,
 				D25B1A678978B02ABFF01D1C /* Pods */,
 				E70278DC0644AA423F156464 /* Frameworks */,
@@ -61,6 +141,8 @@
 			isa = PBXGroup;
 			children = (
 				8BC2E4C4225F2B8600EC0609 /* demo.app */,
+				4B374C722631D13500F20A58 /* ModuleA.framework */,
+				4B374C852631D13C00F20A58 /* ModuleB.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -96,7 +178,62 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		4B374C6D2631D13500F20A58 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4B374C762631D13500F20A58 /* ModuleA.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4B374C802631D13C00F20A58 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4B374C892631D13C00F20A58 /* ModuleB.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
+		4B374C712631D13500F20A58 /* ModuleA */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4B374C7E2631D13500F20A58 /* Build configuration list for PBXNativeTarget "ModuleA" */;
+			buildPhases = (
+				4B374C6D2631D13500F20A58 /* Headers */,
+				4B374C6E2631D13500F20A58 /* Sources */,
+				4B374C6F2631D13500F20A58 /* Frameworks */,
+				4B374C702631D13500F20A58 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ModuleA;
+			productName = ModuleA;
+			productReference = 4B374C722631D13500F20A58 /* ModuleA.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		4B374C842631D13C00F20A58 /* ModuleB */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4B374C8E2631D13C00F20A58 /* Build configuration list for PBXNativeTarget "ModuleB" */;
+			buildPhases = (
+				4B374C802631D13C00F20A58 /* Headers */,
+				4B374C812631D13C00F20A58 /* Sources */,
+				4B374C822631D13C00F20A58 /* Frameworks */,
+				4B374C832631D13C00F20A58 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ModuleB;
+			productName = ModuleB;
+			productReference = 4B374C852631D13C00F20A58 /* ModuleB.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		8BC2E4C3225F2B8600EC0609 /* demo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8BC2E4E1225F2B8800EC0609 /* Build configuration list for PBXNativeTarget "demo" */;
@@ -106,10 +243,13 @@
 				8BC2E4C1225F2B8600EC0609 /* Frameworks */,
 				8BC2E4C2225F2B8600EC0609 /* Resources */,
 				2D50A461DC632DB3E3986761 /* [CP] Embed Pods Frameworks */,
+				4B374C7B2631D13500F20A58 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				4B374C782631D13500F20A58 /* PBXTargetDependency */,
+				4B374C8B2631D13C00F20A58 /* PBXTargetDependency */,
 			);
 			name = demo;
 			productName = demo;
@@ -125,6 +265,12 @@
 				LastSwiftUpdateCheck = 1020;
 				LastUpgradeCheck = 1020;
 				TargetAttributes = {
+					4B374C712631D13500F20A58 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+					4B374C842631D13C00F20A58 = {
+						CreatedOnToolsVersion = 12.4;
+					};
 					8BC2E4C3225F2B8600EC0609 = {
 						CreatedOnToolsVersion = 10.2;
 					};
@@ -145,11 +291,27 @@
 			projectRoot = "";
 			targets = (
 				8BC2E4C3225F2B8600EC0609 /* demo */,
+				4B374C712631D13500F20A58 /* ModuleA */,
+				4B374C842631D13C00F20A58 /* ModuleB */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		4B374C702631D13500F20A58 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4B374C832631D13C00F20A58 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8BC2E4C2225F2B8600EC0609 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -203,6 +365,20 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4B374C6E2631D13500F20A58 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4B374C812631D13C00F20A58 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8BC2E4C0225F2B8600EC0609 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -214,6 +390,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4B374C782631D13500F20A58 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4B374C712631D13500F20A58 /* ModuleA */;
+			targetProxy = 4B374C772631D13500F20A58 /* PBXContainerItemProxy */;
+		};
+		4B374C8B2631D13C00F20A58 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4B374C842631D13C00F20A58 /* ModuleB */;
+			targetProxy = 4B374C8A2631D13C00F20A58 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		8BC2E4D0225F2B8700EC0609 /* LaunchScreen.storyboard */ = {
@@ -227,6 +416,122 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		4B374C7C2631D13500F20A58 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = KU2QEJ9K3Z;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = ModuleA/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.muukii.ModuleA;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		4B374C7D2631D13500F20A58 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = KU2QEJ9K3Z;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = ModuleA/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.muukii.ModuleA;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		4B374C8F2631D13C00F20A58 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = KU2QEJ9K3Z;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = ModuleB/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.muukii.ModuleB;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		4B374C902631D13C00F20A58 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = KU2QEJ9K3Z;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = ModuleB/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.muukii.ModuleB;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		8BC2E4DF225F2B8800EC0609 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -383,6 +688,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4B374C7E2631D13500F20A58 /* Build configuration list for PBXNativeTarget "ModuleA" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4B374C7C2631D13500F20A58 /* Debug */,
+				4B374C7D2631D13500F20A58 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4B374C8E2631D13C00F20A58 /* Build configuration list for PBXNativeTarget "ModuleB" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4B374C8F2631D13C00F20A58 /* Debug */,
+				4B374C902631D13C00F20A58 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		8BC2E4BF225F2B8600EC0609 /* Build configuration list for PBXProject "demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
