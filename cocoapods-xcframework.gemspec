@@ -6,7 +6,7 @@ require "cocoapods-xcframework/gem_version.rb"
 Gem::Specification.new do |spec|
   spec.name = "cocoapods-xcframework"
   spec.version = CocoapodsBinary::VERSION
-  spec.authors = ["leavez","muukii"]
+  spec.authors = ["leavez", "muukii"]
   spec.email = ["muukii.app@gmail.com"]
   spec.description = %q{integrate pods in form of prebuilt frameworks conveniently, reducing compile time}
   spec.summary = %q{A CocoaPods plugin to integrate pods in form of prebuilt frameworks, not source code, by adding just one flag in podfile. Speed up compiling dramatically.}

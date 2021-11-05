@@ -4,8 +4,8 @@ plugin "cocoapods-xcframework"
 use_frameworks! :linkage => :static
 
 target "demo" do
-  pod "Alamofire", binary: true
-  pod "SwiftDate", binary: true
+  pod "Alamofire", binary: false
+  pod "SwiftDate", binary: false
 end
 
 target "ModuleA" do

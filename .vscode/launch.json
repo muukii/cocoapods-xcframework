@@ -8,7 +8,12 @@
       "name": "Debug",
       "type": "Ruby",
       "request": "launch",
-      "program": "${workspaceRoot}/main.rb"
+      "cwd": "${workspaceRoot}",
+      "program": "/Users/muukii/.rbenv/shims/bundle",
+      "useBundler": true,
+      "args": [
+        "exec", "pod", "install"
+      ]
     }
   ]
 }

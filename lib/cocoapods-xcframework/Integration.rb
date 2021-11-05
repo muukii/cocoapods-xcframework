@@ -135,6 +135,7 @@ module Pod
 
       # call original
       old_method2.bind(self).()
+
       # ...
       # ...
       # ...
@@ -149,46 +150,35 @@ module Pod
       # prepare
       cache = []
 
-      def add_vendered_framework(spec, platform, added_framework_file_path)
-        if spec.attributes_hash[platform] == nil
-          spec.attributes_hash[platform] = {}
-        end
-        vendored_frameworks = spec.attributes_hash[platform]["vendored_frameworks"] || []
-        vendored_frameworks = [vendored_frameworks] if vendored_frameworks.kind_of?(String)
-        vendored_frameworks += [added_framework_file_path]
-        spec.attributes_hash[platform]["vendored_frameworks"] = vendored_frameworks
-      end
-
-      def empty_source_files(spec)
-        spec.attributes_hash["source_files"] = []
-        ["ios", "watchos", "tvos", "osx"].each do |plat|
-          if spec.attributes_hash[plat] != nil
-            spec.attributes_hash[plat]["source_files"] = []
-          end
-        end
-      end
-
       specs = self.analysis_result.specifications
+
       prebuilt_specs = (specs.select do |spec|
         self.prebuild_pod_names.include? spec.root.name
       end)
 
       prebuilt_specs.each do |spec|
 
-        puts spec
-
         # Use the prebuild framworks as vendered frameworks
         # get_corresponding_targets
         targets = Pod.fast_get_targets_for_pod_name(spec.root.name, self.pod_targets, cache)
         targets.each do |target|
-          framework_file_path = "#{target.name}.xcframework"
-          add_vendered_framework(spec, target.platform.name.to_s, framework_file_path)
+
+          platform = target.platform.name.to_s
+          if spec.attributes_hash[platform] == nil
+            spec.attributes_hash[platform] = {}
+          end
+          spec.attributes_hash[platform]["vendored_frameworks"] = ["#{target.name}.xcframework"]
         end
         # Clean the source files
         # we just add the prebuilt framework to specific platform and set no source files
         # for all platform, so it doesn't support the sence that 'a pod perbuild for one
         # platform and not for another platform.'
-        empty_source_files(spec)
+        spec.attributes_hash["source_files"] = []
+        ["ios", "watchos", "tvos", "osx"].each do |plat|
+          if spec.attributes_hash[plat] != nil
+            spec.attributes_hash[plat]["source_files"] = []
+          end
+        end
 
         # to remove the resurce bundle target.
         # When specify the "resource_bundles" in podspec, xcode will generate a bundle

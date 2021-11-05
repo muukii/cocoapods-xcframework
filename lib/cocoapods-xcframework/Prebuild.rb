@@ -118,7 +118,7 @@ module Pod
         Pod::Prebuild.build_xcframework(
           sandbox_root_path: sandbox_path,
           target: target,
-          output_path: output_path
+          output_path: output_path,
         )
 
         # save the resource paths for later installing

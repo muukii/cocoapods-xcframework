@@ -1,5 +1,4 @@
 module Pod
-
   class Podfile
     class TargetDefinition
 
@@ -67,7 +66,7 @@ module Pod
 
         # filter prebuild
         prebuild_names = target_definition.prebuild_framework_pod_names
-        
+
         targets = targets.select { |pod_target| prebuild_names.include?(pod_target.pod_name) }
 
         # filter should not prebuild

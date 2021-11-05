@@ -17,7 +17,6 @@ module Pod
 
       class_attr_accessor :dont_remove_source_code
       dont_remove_source_code = false
-
     end
   end
 end

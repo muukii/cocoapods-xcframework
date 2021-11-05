@@ -1,5 +1,5 @@
 require "xcpretty"
-require 'fileutils'
+require "fileutils"
 
 CONFIGURATION = "Release"
 
@@ -16,16 +16,15 @@ def build_for_iosish_platform(
 
   # deployment_target = target.platform.deployment_target.to_s
   target_label = target.label # name with platform if it's used in multiple platforms
-  
+
   createXCFramewrok(
     outputPath: output_path,
     buildDirectory: build_dir,
     moduleName: target.product_module_name,
     projectName: sandbox.project_path.realdirpath,
     scheme: target_label,
-    configuration: CONFIGURATION
+    configuration: CONFIGURATION,
   )
-
 end
 
 def createXCFramewrok(
@@ -33,10 +32,9 @@ def createXCFramewrok(
   buildDirectory:,
   moduleName:,
   projectName:,
-  scheme:, 
+  scheme:,
   configuration:
 )
-
   Pod::UI.puts "#{moduleName} -> Building"
 
   options = []
@@ -57,7 +55,7 @@ def createXCFramewrok(
     destination: "generic/platform=iOS",
     sdk: "iphoneos",
     archivePath: "#{buildDirectory}/#{moduleName}/ios.xcarchive",
-    otherOptions: options
+    otherOptions: options,
   )
 
   xcodebuild(
@@ -66,10 +64,10 @@ def createXCFramewrok(
     destination: "generic/platform=iOS Simulator",
     sdk: "iphonesimulator",
     archivePath: "#{buildDirectory}/#{moduleName}/ios-simulator.xcarchive",
-    otherOptions: options
+    otherOptions: options,
   )
 
-    # https://github.com/madsolar8582/SLRNetworkMonitor/blob/e415fc6399aa164ab8b147a6476630b2418d1d75/release.sh#L73
+  # https://github.com/madsolar8582/SLRNetworkMonitor/blob/e415fc6399aa164ab8b147a6476630b2418d1d75/release.sh#L73
 
   archiveRoot = buildDirectory
   project = projectName
@@ -79,44 +77,40 @@ def createXCFramewrok(
   args = %W(-output "#{output}")
 
   instance_eval do
-
     bitcodePaths = Dir.glob("#{buildDirectory}/#{moduleName}/ios.xcarchive/**/*.bcsymbolmap")
 
-    archivePath = "#{buildDirectory}/#{moduleName}/ios.xcarchive" 
+    archivePath = "#{buildDirectory}/#{moduleName}/ios.xcarchive"
     dSYMPath = "#{archivePath}/dSYMs/#{moduleName}.framework.dSYM"
 
     args.push("-framework \"#{archivePath}/Products/Library/Frameworks/#{moduleName}.framework\"")
 
-    if Dir.exist? dSYMPath 
-       args.push("-debug-symbols \"#{archivePath}/dSYMs/#{moduleName}.framework.dSYM\"")
+    if Dir.exist? dSYMPath
+      args.push("-debug-symbols \"#{archivePath}/dSYMs/#{moduleName}.framework.dSYM\"")
     end
-   
-    args += bitcodePaths.map { |e| 
+
+    args += bitcodePaths.map { |e|
       "-debug-symbols \"#{e}\""
     }
   end
- 
-  instance_eval do
 
+  instance_eval do
     archivePath = "#{buildDirectory}/#{moduleName}/ios-simulator.xcarchive"
     dSYMPath = "#{archivePath}/dSYMs/#{moduleName}.framework.dSYM"
 
     args.push("-framework \"#{archivePath}/Products/Library/Frameworks/#{moduleName}.framework\"")
-    if Dir.exist? dSYMPath 
-       args.push("-debug-symbols \"#{archivePath}/dSYMs/#{moduleName}.framework.dSYM\"")
+    if Dir.exist? dSYMPath
+      args.push("-debug-symbols \"#{archivePath}/dSYMs/#{moduleName}.framework.dSYM\"")
     end
-
   end
 
   command = "xcodebuild -create-xcframework #{args.join(" \\\n")}"
   log = `#{command} 2>&1`
 
-  if File.exist? output 
+  if File.exist? output
     Pod::UI.puts "#{moduleName} -> Success"
   else
     Pod::UI.puts "#{moduleName} -> Failue"
   end
-        
 end
 
 def build_for_macos_platform(sandbox, build_dir, target, flags, configuration, build_xcframework = false)
@@ -174,8 +168,6 @@ module Pod
       target:,
       output_path:
     )
-      Pod::UI.puts "Build XCFramework"
-
       return if target.nil?
 
       sandbox_root = Pathname(sandbox_root_path)
@@ -189,7 +181,7 @@ module Pod
           sandbox: sandbox,
           build_dir: build_dir,
           output_path: output_path,
-          target: target
+          target: target,
         )
       when :osx
         xcodebuild(
