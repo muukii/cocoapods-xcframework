@@ -37,7 +37,7 @@ def createXCFramewrok(
   configuration:
 )
 
-  Pod::UI.puts "#{target_label} -> Building"
+  Pod::UI.puts "#{moduleName} -> Building"
 
   options = []
 
