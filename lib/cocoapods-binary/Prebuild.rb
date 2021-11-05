@@ -111,7 +111,7 @@ module Pod
 
       # build!
       Pod::UI.puts "Prebuild frameworks (total #{targets.count})"
-      Pod::Prebuild.remove_build_dir(sandbox_path)
+      # Pod::Prebuild.remove_build_dir(sandbox_path)
       targets.each do |target|
         if !target.should_build?
           UI.puts "Prebuilding #{target.label}"
@@ -122,12 +122,12 @@ module Pod
         output_path.mkpath unless output_path.exist?
 
         Pod::Prebuild.build_xcframework(
-          sandbox_path,
-          target,
-          output_path,
-          bitcode_enabled,
-          Podfile::DSL.custom_build_options,
-          Podfile::DSL.custom_build_options_simulator
+          sandbox_root_path: sandbox_path,
+          target: target,
+          output_path: output_path,
+          bitcode_enabled: bitcode_enabled,
+          custom_build_options: Podfile::DSL.custom_build_options,
+          custom_build_options_simulator: Podfile::DSL.custom_build_options_simulator
         )
 
         # save the resource paths for later installing
@@ -157,7 +157,7 @@ module Pod
           Pod::Prebuild::Passer.resources_to_copy_for_static_framework[target.name] = path_objects
         end
       end
-      Pod::Prebuild.remove_build_dir(sandbox_path)
+      # Pod::Prebuild.remove_build_dir(sandbox_path)
 
       # copy vendored libraries and frameworks
       targets.each do |target|

@@ -1,76 +1,98 @@
-require "fourflusher"
 require "xcpretty"
+require 'fileutils'
 
 CONFIGURATION = "Release"
-PLATFORMS = {
-  "iphonesimulator" => "iOS",
-  "appletvsimulator" => "tvOS",
-  "watchsimulator" => "watchOS",
-}
 
 #  Build specific target to framework file
 #  @param [PodTarget] target
 #         a specific pod target
 #
 def build_for_iosish_platform(
-  sandbox,
-  build_dir,
-  output_path,
-  target,
-  device,
-  simulator,
-  bitcode_enabled,
-  custom_build_options = [], # Array<String>
-  custom_build_options_simulator = [] # Array<String>
-  
+  sandbox:,
+  build_dir:,
+  output_path:,
+  target:
 )
-  deployment_target = target.platform.deployment_target.to_s
+
+  # deployment_target = target.platform.deployment_target.to_s
   target_label = target.label # name with platform if it's used in multiple platforms
 
-  Pod::UI.puts "Prebuilding #{target_label}... as XCFramework, bitcode: #{bitcode_enabled ? "YES" : "NO"}"
-  other_options = []
-  # bitcode enabled
-  if bitcode_enabled
-    other_options += ["ENABLE_BITCODE=YES"]
-    other_options += ["BITCODE_GENERATION_MODE=bitcode"]
-    other_options += ["OTHER_CFLAGS=-fembed-bitcode"]
-  end
+  Pod::UI.puts "Prebuilding #{target_label} as XCFramework -> #{output_path}"
 
-  other_options += ["BUILD_LIBRARY_FOR_DISTRIBUTION=true"]
+  shell = createXCFramewrok(
+    outputPath: output_path,
+    buildDirectory: build_dir,
+    moduleName: target.product_module_name,
+    projectName: sandbox.project_path.realdirpath,
+    scheme: target_label,
+    configuration: CONFIGURATION
+  )
 
-  other_options += ["SKIP_INSTALL=NO"]
+end
+
+def createXCFramewrok(
+  outputPath:,
+  buildDirectory:,
+  moduleName:,
+  projectName:,
+  scheme:, 
+  configuration:
+)
+
+  options = []
+
+  options.push("ENABLE_BITCODE=YES")
+  options.push("BITCODE_GENERATION_MODE=bitcode")
+  options.push("OTHER_CFLAGS=-fembed-bitcode")
+  options.push("BUILD_LIBRARY_FOR_DISTRIBUTION=true")
+  options.push("SKIP_INSTALL=NO")
+  options.push("DEBUG_INFORMATION_FORMAT=dwarf-with-dsym")
+  options.push("ONLY_ACTIVE_ARCH=NO")
+
+  # FileUtils.mkdir_p
 
   xcodebuild(
-    sandbox: sandbox,
-    scheme: target_label,
-    sdk: device,
-    deployment_target: deployment_target,
-    other_options: other_options + custom_build_options,
+    projectName: projectName,
+    scheme: scheme,
+    destination: "generic/platform=iOS",
+    sdk: "iphoneos",
+    archivePath: "#{buildDirectory}/#{moduleName}/ios.xcarchive",
+    otherOptions: options
   )
 
   xcodebuild(
-    sandbox: sandbox,
-    scheme: target_label,
-    sdk: simulator,
-    deployment_target: deployment_target,
-    other_options: other_options + custom_build_options_simulator,
+    projectName: projectName,
+    scheme: scheme,
+    destination: "generic/platform=iOS Simulator",
+    sdk: "iphonesimulator",
+    archivePath: "#{buildDirectory}/#{moduleName}/ios-simulator.xcarchive",
+    otherOptions: options
   )
 
-  # paths
-  target_name = target.name # equals target.label, like "AFNeworking-iOS" when AFNetworking is used in multiple platforms.
-  module_name = target.product_module_name
+  bitcodePaths = Dir.glob("#{buildDirectory}/#{moduleName}/ios.xcarchive/**/*.bcsymbolmap")
+  
+  # https://github.com/madsolar8582/SLRNetworkMonitor/blob/e415fc6399aa164ab8b147a6476630b2418d1d75/release.sh#L73
 
-  device_lib = "#{build_dir}/#{CONFIGURATION}-#{device}/#{target_name}/#{module_name}.framework"
-  simulator_lib = "#{build_dir}/#{CONFIGURATION}-#{simulator}/#{target_name}/#{module_name}.framework"
+  archiveRoot = buildDirectory
+  project = projectName
 
-  create_xcframework([device_lib, simulator_lib], output_path, module_name)
-  # copy_dsym_files(sandbox_root.parent + 'dSYM', CONFIGURATION)
+  args = %W(-output "#{outputPath}/#{moduleName}.xcframework")
 
-  dSYM_path = output_path + "#{module_name}.dSYMs"
+  args.push("-framework \"#{buildDirectory}/#{moduleName}/ios.xcarchive/Products/Library/Frameworks/#{moduleName}.framework\"")
+  args.push("-debug-symbols \"#{buildDirectory}/#{moduleName}/ios.xcarchive/dSYMs/#{moduleName}.framework.dSYM\"")
+  args += bitcodePaths.map { |e| 
+    "-debug-symbols \"#{e}\""
+  }
+ 
+  args.push("-framework \"#{buildDirectory}/#{moduleName}/ios-simulator.xcarchive/Products/Library/Frameworks/#{moduleName}.framework\"")
+  args.push("-debug-symbols \"#{buildDirectory}/#{moduleName}/ios-simulator.xcarchive/dSYMs/#{moduleName}.framework.dSYM\"")
 
-  dSYM_path.mkpath unless dSYM_path.exist?
-  FileUtils.mv device_lib + ".dSYM", File.join(dSYM_path, "#{device}.dSYM")
-  FileUtils.mv simulator_lib + ".dSYM", File.join(dSYM_path, "#{simulator}.dSYM")
+  command = "xcodebuild -create-xcframework #{args.join(" \\\n")}"
+
+  puts "Creates xcframework with #{command}"
+  
+  log = `#{command} 2>&1`
+    
 end
 
 def build_for_macos_platform(sandbox, build_dir, target, flags, configuration, build_xcframework = false)
@@ -86,106 +108,17 @@ def build_for_macos_platform(sandbox, build_dir, target, flags, configuration, b
   end
 end
 
-def enable_debug_information(project_path, configuration)
-  project = Xcodeproj::Project.open(project_path)
-  project.targets.each do |target|
-    config = target.build_configurations.find { |config| config.name.eql? configuration }
-    config.build_settings["DEBUG_INFORMATION_FORMAT"] = "dwarf-with-dsym"
-    config.build_settings["ONLY_ACTIVE_ARCH"] = "NO"
-  end
-  project.save
-end
-
-def create_xcframework(frameworks, destination, module_name)
-  args = %W(-create-xcframework -output #{destination}/#{module_name}.xcframework)
-
-  frameworks.each do |framework|
-    args += %W(-framework #{framework})
-  end
-
-  Pod::Executable.execute_command "xcodebuild", args, true
-end
-
-def create_universal_framework(device_lib, simulator_lib, build_dir, target_name, module_name, output_path)
-  device_binary = device_lib + "/#{module_name}"
-  simulator_binary = simulator_lib + "/#{module_name}"
-
-  Pod::UI.puts "#{device_binary} #{simulator_binary}"
-
-  unless File.file?(device_binary) && File.file?(simulator_binary)
-    Pod::UI.puts "Binary not found"
-    return
-  end
-
-  # the device_lib path is the final output file path
-  # combine the binaries
-  tmp_lipoed_binary_path = "#{build_dir}/#{target_name}"
-  lipo_log = `lipo -create -output #{tmp_lipoed_binary_path} #{device_binary} #{simulator_binary}`
-  puts lipo_log unless File.exist?(tmp_lipoed_binary_path)
-  FileUtils.mv tmp_lipoed_binary_path, device_binary, :force => true
-
-  # collect the swiftmodule file for various archs.
-  device_swiftmodule_path = device_lib + "/Modules/#{module_name}.swiftmodule"
-  simulator_swiftmodule_path = simulator_lib + "/Modules/#{module_name}.swiftmodule"
-  if File.exist?(device_swiftmodule_path)
-    FileUtils.cp_r simulator_swiftmodule_path + "/.", device_swiftmodule_path
-  end
-
-  # combine the generated swift headers
-  # (In xcode 10.2, the generated swift headers vary for each archs)
-  # https://github.com/leavez/cocoapods-binary/issues/58
-  simulator_generated_swift_header_path = simulator_lib + "/Headers/#{module_name}-Swift.h"
-  device_generated_swift_header_path = device_lib + "/Headers/#{module_name}-Swift.h"
-  if File.exist? simulator_generated_swift_header_path
-    device_header = File.read(device_generated_swift_header_path)
-    simulator_header = File.read(simulator_generated_swift_header_path)
-    # https://github.com/Carthage/Carthage/issues/2718#issuecomment-473870461
-    combined_header_content = %Q{
-#if TARGET_OS_SIMULATOR // merged by cocoapods-binary
-
-#{simulator_header}
-
-#else // merged by cocoapods-binary
-
-#{device_header}
-
-#endif // merged by cocoapods-binary
-}
-    File.write(device_generated_swift_header_path, combined_header_content.strip)
-  end
-
-  # handle the dSYM files
-  device_dsym = "#{device_lib}.dSYM"
-  if File.exist? device_dsym
-    # lipo the simulator dsym
-    simulator_dsym = "#{simulator_lib}.dSYM"
-    if File.exist? simulator_dsym
-      tmp_lipoed_binary_path = "#{output_path}/#{module_name}.draft"
-      lipo_log = `lipo -create -output #{tmp_lipoed_binary_path} #{device_dsym}/Contents/Resources/DWARF/#{module_name} #{simulator_dsym}/Contents/Resources/DWARF/#{module_name}`
-      puts lipo_log unless File.exist?(tmp_lipoed_binary_path)
-      FileUtils.mv tmp_lipoed_binary_path, "#{device_lib}.dSYM/Contents/Resources/DWARF/#{module_name}", :force => true
-    end
-    # move
-    FileUtils.mv device_dsym, output_path, :force => true
-  end
-
-  # output
-  output_path.mkpath unless output_path.exist?
-  FileUtils.mv device_lib, output_path, :force => true
-end
-
 def xcodebuild(
-  sandbox:,
+  projectName:,
   scheme:,
+  destination:,
   sdk:,
-  deployment_target:,
-  other_options:
+  archivePath:,
+  otherOptions:
 )
-  args = %W(-project #{sandbox.project_path.realdirpath} -scheme #{scheme} -configuration #{CONFIGURATION} -sdk #{sdk})
-  platform = PLATFORMS[sdk]
-  args += Fourflusher::SimControl.new.destination(:oldest, platform, deployment_target) unless platform.nil?
-  args += other_options
-  log = `xcodebuild #{args.join(" ")} 2>&1`
+  args = %W(-project "#{projectName}" -scheme "#{scheme}" -configuration "#{CONFIGURATION}" -sdk "#{sdk}" -destination "#{destination}" -archivePath "#{archivePath}")
+  args += otherOptions
+  log = `xcodebuild archive #{args.join(" ")} 2>&1`
   exit_code = $?.exitstatus  # Process::Status
   is_succeed = (exit_code == 0)
 
@@ -211,12 +144,12 @@ end
 module Pod
   class Prebuild
     def self.build_xcframework(
-      sandbox_root_path,
-      target,
-      output_path,
-      bitcode_enabled,
-      custom_build_options = [],
-      custom_build_options_simulator = []
+      sandbox_root_path:,
+      target:,
+      output_path:,
+      bitcode_enabled:,
+      custom_build_options:,
+      custom_build_options_simulator:
     )
       Pod::UI.puts "Build XCFramework"
 
@@ -230,15 +163,10 @@ module Pod
       case target.platform.name
       when :ios
         build_for_iosish_platform(
-          sandbox,
-          build_dir,
-          output_path,
-          target,
-          "iphoneos",
-          "iphonesimulator",
-          bitcode_enabled,
-          custom_build_options,
-          custom_build_options_simulator
+          sandbox: sandbox,
+          build_dir: build_dir,
+          output_path: output_path,
+          target: target
         )
       when :osx
         xcodebuild(
