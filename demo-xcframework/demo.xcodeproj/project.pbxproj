@@ -211,6 +211,7 @@
 				4B374C6E2631D13500F20A58 /* Sources */,
 				4B374C6F2631D13500F20A58 /* Frameworks */,
 				4B374C702631D13500F20A58 /* Resources */,
+				08F192D6DDC52D15CC2BAD18 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -249,7 +250,6 @@
 				8BC2E4C1225F2B8600EC0609 /* Frameworks */,
 				8BC2E4C2225F2B8600EC0609 /* Resources */,
 				4B374C7B2631D13500F20A58 /* Embed Frameworks */,
-				599AF57E52E3E20B6F801538 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -351,21 +351,21 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		599AF57E52E3E20B6F801538 /* [CP] Embed Pods Frameworks */ = {
+		08F192D6DDC52D15CC2BAD18 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-demo/Pods-demo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-ModuleA/Pods-ModuleA-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-demo/Pods-demo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-ModuleA/Pods-ModuleA-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-demo/Pods-demo-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ModuleA/Pods-ModuleA-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		9C026C1A932EFDD1B1912580 /* [CP] Check Pods Manifest.lock */ = {

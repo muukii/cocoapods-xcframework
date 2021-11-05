@@ -1,8 +1,8 @@
 platform :ios, "12.0"
 plugin "cocoapods-xcframework"
 
-# use_frameworks! :linkage => :static
-use_frameworks!
+use_frameworks! :linkage => :static
+#use_frameworks!
 
 target "demo" do
   pod "Alamofire", binary: true
