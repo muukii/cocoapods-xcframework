@@ -195,7 +195,7 @@ module Pod
         # target after pod install. But the bundle have already built when the prebuit
         # phase and saved in the framework folder. We will treat it as a normal resource
         # file.
-        # https://github.com/leavez/cocoapods-binary/issues/29
+        # https://github.com/leavez/cocoapods-xcframework/issues/29
         if spec.attributes_hash["resource_bundles"]
           bundle_names = spec.attributes_hash["resource_bundles"].keys
           spec.attributes_hash["resource_bundles"] = nil
@@ -244,7 +244,7 @@ module Pod
         patch = <<-SH.strip_heredoc
                     #!/bin/sh
                 
-                    # ---- this is added by cocoapods-binary ---
+                    # ---- this is added by cocoapods-xcframework ---
                     # Readlink cannot handle relative symlink well, so we override it to a new one
                     # If the path isn't an absolute path, we add a realtive prefix.
                     old_read_link=`which readlink`

@@ -6,7 +6,7 @@ def wrapper(content):
 platform :ios, '9.0'
 inhibit_all_warnings!
 use_frameworks!
-plugin "cocoapods-binary"
+plugin "cocoapods-xcframework"
 
 target 'Binary' do
 %s

@@ -1,1 +1,1 @@
-require "cocoapods-binary/Main"
+require "cocoapods-xcframework/Main"

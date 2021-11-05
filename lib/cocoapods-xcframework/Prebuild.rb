@@ -132,7 +132,7 @@ module Pod
               else
                 # resource_paths is Hash{String=>Array<String>} on 1.6 and above
                 # (use AFNetworking to generate a demo data)
-                # https://github.com/leavez/cocoapods-binary/issues/50
+                # https://github.com/leavez/cocoapods-xcframework/issues/50
                 target.resource_paths.values.flatten
               end
             end

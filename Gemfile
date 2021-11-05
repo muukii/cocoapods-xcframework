@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in cocoapods-binary.gemspec
+# Specify your gem's dependencies in cocoapods-xcframework.gemspec
 gemspec
 
 group :development do

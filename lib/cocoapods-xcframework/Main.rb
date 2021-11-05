@@ -22,7 +22,7 @@ module Pod
   end
 end
 
-Pod::HooksManager.register("cocoapods-binary", :pre_install) do |installer_context|
+Pod::HooksManager.register("cocoapods-xcframework", :pre_install) do |installer_context|
   require_relative "helper/feature_switches"
   if Pod.is_prebuild_stage
     next
