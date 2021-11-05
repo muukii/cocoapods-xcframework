@@ -1,1 +1,1 @@
-require 'cocoapods-binary/gem_version'
+require "cocoapods-binary/gem_version"

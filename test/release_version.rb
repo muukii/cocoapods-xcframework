@@ -1,8 +1,8 @@
 # update version
 version = ARGV[0]
-if version == nil 
-    puts "please input a version"
-    exit
+if version == nil
+  puts "please input a version"
+  exit
 end
 path = "lib/cocoapods-binary/gem_version.rb"
 content = <<-eos

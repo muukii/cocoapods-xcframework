@@ -1,16 +1,53 @@
 PODS:
-  - Masonry (1.1.0)
+  - Alamofire (5.4.4)
+  - Brightroom (2.3.3):
+    - Brightroom/Engine (= 2.3.3)
+    - Brightroom/UI-Classic (= 2.3.3)
+    - Brightroom/UI-Crop (= 2.3.3)
+    - Verge/Store (>= 8.9.1)
+  - Brightroom/Engine (2.3.3):
+    - Verge/Store (>= 8.9.1)
+  - Brightroom/UI-Classic (2.3.3):
+    - Brightroom/Engine
+    - TransitionPatch
+    - Verge/Store (>= 8.9.1)
+  - Brightroom/UI-Crop (2.3.3):
+    - Brightroom/Engine
+    - Verge/Store (>= 8.9.1)
+  - MondrianLayout (0.1.0)
+  - Reusable (4.1.2):
+    - Reusable/Storyboard (= 4.1.2)
+    - Reusable/View (= 4.1.2)
+  - Reusable/Storyboard (4.1.2)
+  - Reusable/View (4.1.2)
+  - TransitionPatch (1.0.2)
+  - Verge/ObjcBridge (8.12.2)
+  - Verge/Store (8.12.2):
+    - Verge/ObjcBridge
 
 DEPENDENCIES:
-  - Masonry
+  - Alamofire
+  - Brightroom
+  - MondrianLayout
+  - Reusable
 
 SPEC REPOS:
   trunk:
-    - Masonry
+    - Alamofire
+    - Brightroom
+    - MondrianLayout
+    - Reusable
+    - TransitionPatch
+    - Verge
 
 SPEC CHECKSUMS:
-  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
+  Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
+  Brightroom: 9cde86b5e7bbfa89e7a53880c1add94f946d2301
+  MondrianLayout: fc0923510d99fe6b8455351340e8476d927ffe7a
+  Reusable: 6bae6a5e8aa793c9c441db0213c863a64bce9136
+  TransitionPatch: c02b48b1429255b14ef82b7e411034e0958b9681
+  Verge: 052910fb8112128687695f238aaba5770a0a8b04
 
-PODFILE CHECKSUM: 35aa48f5e3b98796a58c6bec853dba2ef9d8dbc9
+PODFILE CHECKSUM: aacef07b2ad98d3ab5a41e32b30c53155a310407
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.11.2

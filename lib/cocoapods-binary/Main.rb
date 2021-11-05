@@ -12,10 +12,6 @@ module Pod
         DSL.prebuild_all = true
       end
 
-      def use_xcframework!
-        DSL.use_xcframework = true
-      end
-
       # Fobidden dependency auto build to binary
       def forbidden_dependency_binary!
         DSL.forbidden_dependency_binary = true
@@ -71,9 +67,6 @@ module Pod
 
       class_attr_accessor :prebuild_all
       prebuild_all = false
-
-      class_attr_accessor :use_xcframework
-      use_xcframework = false
 
       class_attr_accessor :bitcode_enabled
       bitcode_enabled = false
