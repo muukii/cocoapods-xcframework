@@ -50,6 +50,7 @@ module Pod
             spec.attributes_hash[platform] = {}
           end
           spec.attributes_hash[platform]["vendored_frameworks"] = ["#{target.name}.xcframework"]
+          spec.attributes_hash[platform]["preserve_paths"] = ["#{target.name}.xcframework"]
         end
         # Clean the source files
         # we just add the prebuilt framework to specific platform and set no source files
