@@ -16,10 +16,8 @@ def build_for_iosish_platform(
 
   # deployment_target = target.platform.deployment_target.to_s
   target_label = target.label # name with platform if it's used in multiple platforms
-
-  Pod::UI.puts "Prebuilding #{target_label} as XCFramework -> #{output_path}"
-
-  shell = createXCFramewrok(
+  
+  createXCFramewrok(
     outputPath: output_path,
     buildDirectory: build_dir,
     moduleName: target.product_module_name,
@@ -38,6 +36,8 @@ def createXCFramewrok(
   scheme:, 
   configuration:
 )
+
+  Pod::UI.puts "#{target_label} -> Building"
 
   options = []
 
@@ -69,30 +69,54 @@ def createXCFramewrok(
     otherOptions: options
   )
 
-  bitcodePaths = Dir.glob("#{buildDirectory}/#{moduleName}/ios.xcarchive/**/*.bcsymbolmap")
-  
-  # https://github.com/madsolar8582/SLRNetworkMonitor/blob/e415fc6399aa164ab8b147a6476630b2418d1d75/release.sh#L73
+    # https://github.com/madsolar8582/SLRNetworkMonitor/blob/e415fc6399aa164ab8b147a6476630b2418d1d75/release.sh#L73
 
   archiveRoot = buildDirectory
   project = projectName
 
-  args = %W(-output "#{outputPath}/#{moduleName}.xcframework")
+  output = "#{outputPath}/#{moduleName}.xcframework"
 
-  args.push("-framework \"#{buildDirectory}/#{moduleName}/ios.xcarchive/Products/Library/Frameworks/#{moduleName}.framework\"")
-  args.push("-debug-symbols \"#{buildDirectory}/#{moduleName}/ios.xcarchive/dSYMs/#{moduleName}.framework.dSYM\"")
-  args += bitcodePaths.map { |e| 
-    "-debug-symbols \"#{e}\""
-  }
+  args = %W(-output "#{output}")
+
+  instance_eval do
+
+    bitcodePaths = Dir.glob("#{buildDirectory}/#{moduleName}/ios.xcarchive/**/*.bcsymbolmap")
+
+    archivePath = "#{buildDirectory}/#{moduleName}/ios.xcarchive" 
+    dSYMPath = "#{archivePath}/dSYMs/#{moduleName}.framework.dSYM"
+
+    args.push("-framework \"#{archivePath}/Products/Library/Frameworks/#{moduleName}.framework\"")
+
+    if Dir.exist? dSYMPath 
+       args.push("-debug-symbols \"#{archivePath}/dSYMs/#{moduleName}.framework.dSYM\"")
+    end
+   
+    args += bitcodePaths.map { |e| 
+      "-debug-symbols \"#{e}\""
+    }
+  end
  
-  args.push("-framework \"#{buildDirectory}/#{moduleName}/ios-simulator.xcarchive/Products/Library/Frameworks/#{moduleName}.framework\"")
-  args.push("-debug-symbols \"#{buildDirectory}/#{moduleName}/ios-simulator.xcarchive/dSYMs/#{moduleName}.framework.dSYM\"")
+  instance_eval do
+
+    archivePath = "#{buildDirectory}/#{moduleName}/ios-simulator.xcarchive"
+    dSYMPath = "#{archivePath}/dSYMs/#{moduleName}.framework.dSYM"
+
+    args.push("-framework \"#{archivePath}/Products/Library/Frameworks/#{moduleName}.framework\"")
+    if Dir.exist? dSYMPath 
+       args.push("-debug-symbols \"#{archivePath}/dSYMs/#{moduleName}.framework.dSYM\"")
+    end
+
+  end
 
   command = "xcodebuild -create-xcframework #{args.join(" \\\n")}"
-
-  # puts "Creates xcframework with #{command}"
-  
   log = `#{command} 2>&1`
-    
+
+  if File.exist? output 
+    Pod::UI.puts "#{moduleName} -> Success"
+  else
+    Pod::UI.puts "#{moduleName} -> Failue"
+  end
+        
 end
 
 def build_for_macos_platform(sandbox, build_dir, target, flags, configuration, build_xcframework = false)
@@ -118,7 +142,9 @@ def xcodebuild(
 )
   args = %W(-project "#{projectName}" -scheme "#{scheme}" -configuration "#{CONFIGURATION}" -sdk "#{sdk}" -destination "#{destination}" -archivePath "#{archivePath}")
   args += otherOptions
-  log = `xcodebuild archive #{args.join(" ")} 2>&1`
+  command = "xcodebuild archive #{args.join(" ")}"
+
+  log = `#{command} 2>&1`
   exit_code = $?.exitstatus  # Process::Status
   is_succeed = (exit_code == 0)
 

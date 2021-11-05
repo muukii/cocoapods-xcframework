@@ -175,6 +175,8 @@ module Pod
 
       prebuilt_specs.each do |spec|
 
+        puts spec
+
         # Use the prebuild framworks as vendered frameworks
         # get_corresponding_targets
         targets = Pod.fast_get_targets_for_pod_name(spec.root.name, self.pod_targets, cache)
