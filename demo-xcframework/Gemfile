@@ -2,5 +2,5 @@
 source "https://rubygems.org"
 
 gem "cocoapods"
-gem "cocoapods-binary", :path => "../"
+gem "cocoapods-xcframework", :path => "../"
 gem "xcpretty"
