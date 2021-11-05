@@ -8,7 +8,9 @@ target "demo" do
   pod "Alamofire", binary: true
   pod "SwiftDate", binary: true
   pod "MondrianLayout", binary: true
-  pod "Brightroom", binary: true
+  pod "Texture/Core", binary: true
+  pod "TextureBridging"
+  pod "Brightroom"
 end
 
 target "ModuleA" do
