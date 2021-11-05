@@ -20,6 +20,7 @@ PODS:
     - Reusable/View (= 4.1.2)
   - Reusable/Storyboard (4.1.2)
   - Reusable/View (4.1.2)
+  - SwiftDate (6.3.1)
   - TransitionPatch (1.0.2)
   - Verge/ObjcBridge (8.12.2)
   - Verge/Store (8.12.2):
@@ -30,6 +31,7 @@ DEPENDENCIES:
   - Brightroom
   - MondrianLayout
   - Reusable
+  - SwiftDate
 
 SPEC REPOS:
   trunk:
@@ -37,6 +39,7 @@ SPEC REPOS:
     - Brightroom
     - MondrianLayout
     - Reusable
+    - SwiftDate
     - TransitionPatch
     - Verge
 
@@ -45,9 +48,10 @@ SPEC CHECKSUMS:
   Brightroom: 9cde86b5e7bbfa89e7a53880c1add94f946d2301
   MondrianLayout: fc0923510d99fe6b8455351340e8476d927ffe7a
   Reusable: 6bae6a5e8aa793c9c441db0213c863a64bce9136
+  SwiftDate: 72d28954e8e1c6c1c0f917ccc8005e4f83c7d4b2
   TransitionPatch: c02b48b1429255b14ef82b7e411034e0958b9681
   Verge: 052910fb8112128687695f238aaba5770a0a8b04
 
-PODFILE CHECKSUM: aacef07b2ad98d3ab5a41e32b30c53155a310407
+PODFILE CHECKSUM: d8e87a713f92e87e1948709af400318b3e305d29
 
 COCOAPODS: 1.11.2

@@ -1,11 +1,11 @@
 platform :ios, "12.0"
 plugin "cocoapods-binary"
 
-enable_bitcode_for_prebuilt_frameworks!
 use_frameworks!
 
 target "demo" do
   pod "Alamofire", binary: true
+  pod "SwiftDate", binary: true
 end
 
 target "ModuleA" do
