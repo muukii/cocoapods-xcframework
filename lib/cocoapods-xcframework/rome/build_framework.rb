@@ -35,7 +35,7 @@ def createXCFramewrok(
   scheme:,
   configuration:
 )
-  Pod::UI.puts "#{moduleName} -> Building into #{outputPath}"
+  Pod::UI.puts "🚜 #{moduleName} -> Building into #{outputPath}"
 
   options = []
 
@@ -108,12 +108,15 @@ def createXCFramewrok(
   end
 
   command = "xcodebuild -create-xcframework #{args.join(" \\\n")}"
-  log = `#{command} 2>&1`
+
+  puts command
+
+  log = `#{command}`
 
   if File.exist? output
-    Pod::UI.puts "#{moduleName} -> Success"
+    Pod::UI.puts "🚜 #{moduleName} -> ✅ Success #{output}\n"
   else
-    Pod::UI.puts "#{moduleName} -> Failue"
+    Pod::UI.puts "🚜 #{moduleName} -> ❌ Failue\n"
   end
 end
 
@@ -142,7 +145,11 @@ def xcodebuild(
   args += otherOptions
   command = "xcodebuild archive #{args.join(" ")}"
 
+  puts command
+
   log = `#{command} 2>&1`
+
+
   exit_code = $?.exitstatus  # Process::Status
   is_succeed = (exit_code == 0)
 
