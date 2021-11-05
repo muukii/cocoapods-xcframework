@@ -46,8 +46,6 @@ def createXCFramewrok(
   options.push("SKIP_INSTALL=NO")
   options.push("DEBUG_INFORMATION_FORMAT=dwarf-with-dsym")
   options.push("ONLY_ACTIVE_ARCH=NO")
-  options.push("EXCLUDED_ARCHS=\"\"")
-  options.push("EXCLUDED_ARCHS[sdk=iphonesimulator*]=\"\"")
 
   # FileUtils.mkdir_p
 
@@ -103,6 +101,10 @@ def createXCFramewrok(
     if Dir.exist? dSYMPath
       args.push("-debug-symbols \"#{archivePath}/dSYMs/#{moduleName}.framework.dSYM\"")
     end
+  end
+
+  if File.exist? output
+    FileUtils.remove_dir(output)
   end
 
   command = "xcodebuild -create-xcframework #{args.join(" \\\n")}"
