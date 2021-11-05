@@ -89,7 +89,7 @@ def createXCFramewrok(
 
   command = "xcodebuild -create-xcframework #{args.join(" \\\n")}"
 
-  puts "Creates xcframework with #{command}"
+  # puts "Creates xcframework with #{command}"
   
   log = `#{command} 2>&1`
     
