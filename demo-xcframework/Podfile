@@ -1,11 +1,13 @@
 platform :ios, "12.0"
 plugin "cocoapods-xcframework"
 
-use_frameworks! :linkage => :static
+# use_frameworks! :linkage => :static
+use_frameworks!
 
 target "demo" do
-  pod "Alamofire", binary: false
-  pod "SwiftDate", binary: false
+  pod "Alamofire", binary: true
+  pod "SwiftDate", binary: true
+  pod "MondrianLayout", binary: true
 end
 
 target "ModuleA" do

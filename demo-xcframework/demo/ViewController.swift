@@ -1,6 +1,7 @@
 
 import UIKit
 import Alamofire
+import MondrianLayout
 
 class ViewController: UIViewController {
 
@@ -14,6 +15,16 @@ class ViewController: UIViewController {
     do {
       let session = Session()
       print(session)
+    }
+
+    view.mondrian.buildSubviews {
+      VStackBlock {
+        { () -> UILabel in
+          let label = UILabel()
+          label.text = "Hello"
+          return label
+        }()
+      }
     }
   }
 
