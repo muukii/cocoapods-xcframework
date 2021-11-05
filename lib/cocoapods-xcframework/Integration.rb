@@ -225,110 +225,116 @@ end
 # to read the read path. As the symlink is a relative symlink, readlink cannot handle it well. So
 # we override the `readlink` to a fixed version.
 #
-module Pod
-  module Generator
-    class EmbedFrameworksScript
-      old_method = instance_method(:script)
-      define_method(:script) do
-        script = old_method.bind(self).()
-        patch = <<-SH.strip_heredoc
-                    #!/bin/sh
+# module Pod
+#   module Generator
+#     class EmbedFrameworksScript
+#       old_method = instance_method(:script)
+#       define_method(:script) do
+#         script = old_method.bind(self).()
+#         patch = <<-SH.strip_heredoc
+#                     #!/bin/sh
                 
-                    # ---- this is added by cocoapods-xcframework ---
-                    # Readlink cannot handle relative symlink well, so we override it to a new one
-                    # If the path isn't an absolute path, we add a realtive prefix.
-                    old_read_link=`which readlink`
-                    readlink () {
-                        path=`$old_read_link "$1"`;
-                        if [ $(echo "$path" | cut -c 1-1) = '/' ]; then
-                            echo $path;
-                        else
-                            echo "`dirname $1`/$path";
-                        fi
-                    }
-                    # --- 
-                SH
+#                     # ---- this is added by cocoapods-xcframework ---
+#                     # Readlink cannot handle relative symlink well, so we override it to a new one
+#                     # If the path isn't an absolute path, we add a realtive prefix.
+#                     old_read_link=`which readlink`
+#                     readlink () {
+#                         path=`$old_read_link "$1"`;
+#                         if [ $(echo "$path" | cut -c 1-1) = '/' ]; then
+#                             echo $path;
+#                         else
+#                             echo "`dirname $1`/$path";
+#                         fi
+#                     }
+#                     # --- 
+#                 SH
 
-        # patch the rsync for copy dSYM symlink
-        script = script.gsub "rsync --delete", "rsync --copy-links --delete"
+#         # patch the rsync for copy dSYM symlink
+#         script = script.gsub "rsync --delete", "rsync --copy-links --delete"
 
-        patch + script
-      end
-    end
-  end
-end
+#         patch + script
+#       end
+#     end
+#   end
+# end
 
-module Pod
-  module Generator
-    class CopydSYMsScript
-      old_method = instance_method(:generate)
-      define_method(:generate) do
-        script = old_method.bind(self).()
-        script = script.gsub(/-av/, "-r -L -p -t -g -o -D -v")
-      end
-    end
-  end
-end
+# module Pod
+#   module Generator
+#     class CopydSYMsScript
+#       old_method = instance_method(:generate)
+#       define_method(:generate) do
+#         puts "Copy_dSYM"
+#         script = old_method.bind(self).()
+#         script = script.gsub(/-av/, "-r -L -p -t -g -o -D -v")
+#       end
+#     end
+#   end
+# end
 
-module Pod
-  module Generator
-    class CopyXCFrameworksScript
-      old_method = instance_method(:script)
-      define_method(:script) do
-        script = old_method.bind(self).()
-        script = script.gsub(/-av/, "-r -L -p -t -g -o -D -v")
-      end
-    end
-  end
-end
+# module Pod
+#   module Generator
+#     class CopyXCFrameworksScript
+#       old_method = instance_method(:script)
+#       define_method(:script) do        
+#         script = old_method.bind(self).()
 
-Pod::Installer::Xcode::PodsProjectGenerator::PodTargetInstaller.define_singleton_method(:dsym_paths) do |target|
-  dsym_paths = target.framework_paths.values.flatten.reject { |fmwk_path| fmwk_path.dsym_path.nil? }.map(&:dsym_path)
-  dsym_paths.concat(target.xcframeworks.values.flatten.flat_map { |xcframework| xcframework_dsyms(xcframework.path) })
-  dsym_paths.uniq
-end
+#         puts "Copy XCFramework #{script}"
+#         script = script.gsub(/-av/, "-r -L -p -t -g -o -D -v")
+#         puts "🤵🏻‍♂️"
+#         puts "Copy XCFramework #{script}"
+#         script
+#       end
+#     end
+#   end
+# end
 
-module Pod
-  class Installer
-    class Xcode
-      class PodsProjectGenerator
-        class PodTargetIntegrator
-          old_method = instance_method(:add_copy_xcframeworks_script_phase)
-          define_method(:add_copy_xcframeworks_script_phase) do |native_target|
-            script_path = "${PODS_ROOT}/#{target.copy_xcframeworks_script_path.relative_path_from(target.sandbox.root)}"
+# Pod::Installer::Xcode::PodsProjectGenerator::PodTargetInstaller.define_singleton_method(:dsym_paths) do |target|
+#   dsym_paths = target.framework_paths.values.flatten.reject { |fmwk_path| fmwk_path.dsym_path.nil? }.map(&:dsym_path)
+#   dsym_paths.concat(target.xcframeworks.values.flatten.flat_map { |xcframework| xcframework_dsyms(xcframework.path) })
+#   dsym_paths.uniq
+# end
 
-            input_paths_by_config = {}
-            output_paths_by_config = {}
+# module Pod
+#   class Installer
+#     class Xcode
+#       class PodsProjectGenerator
+#         class PodTargetIntegrator
+#           old_method = instance_method(:add_copy_xcframeworks_script_phase)
+#           define_method(:add_copy_xcframeworks_script_phase) do |native_target|
+#             script_path = "${PODS_ROOT}/#{target.copy_xcframeworks_script_path.relative_path_from(target.sandbox.root)}"
 
-            xcframeworks = target.xcframeworks.values.flatten
+#             input_paths_by_config = {}
+#             output_paths_by_config = {}
 
-            if use_input_output_paths? && !xcframeworks.empty?
-              input_file_list_path = target.copy_xcframeworks_script_input_files_path
-              input_file_list_relative_path = "${PODS_ROOT}/#{input_file_list_path.relative_path_from(target.sandbox.root)}"
-              input_paths_key = UserProjectIntegrator::TargetIntegrator::XCFileListConfigKey.new(input_file_list_path, input_file_list_relative_path)
-              input_paths = input_paths_by_config[input_paths_key] = []
+#             xcframeworks = target.xcframeworks.values.flatten
 
-              framework_paths = xcframeworks.map { |xcf| "${PODS_ROOT}/#{xcf.path.relative_path_from(target.sandbox.root)}" }
-              input_paths.concat framework_paths
+#             if use_input_output_paths? && !xcframeworks.empty?
+#               input_file_list_path = target.copy_xcframeworks_script_input_files_path
+#               input_file_list_relative_path = "${PODS_ROOT}/#{input_file_list_path.relative_path_from(target.sandbox.root)}"
+#               input_paths_key = UserProjectIntegrator::TargetIntegrator::XCFileListConfigKey.new(input_file_list_path, input_file_list_relative_path)
+#               input_paths = input_paths_by_config[input_paths_key] = []
 
-              output_file_list_path = target.copy_xcframeworks_script_output_files_path
-              output_file_list_relative_path = "${PODS_ROOT}/#{output_file_list_path.relative_path_from(target.sandbox.root)}"
-              output_paths_key = UserProjectIntegrator::TargetIntegrator::XCFileListConfigKey.new(output_file_list_path, output_file_list_relative_path)
-              output_paths_by_config[output_paths_key] = xcframeworks.map do |xcf|
-                "#{Target::BuildSettings::XCFRAMEWORKS_BUILD_DIR_VARIABLE}/#{xcf.name}"
-              end
-            end
+#               framework_paths = xcframeworks.map { |xcf| "${PODS_ROOT}/#{xcf.path.relative_path_from(target.sandbox.root)}" }
+#               input_paths.concat framework_paths
 
-            if xcframeworks.empty?
-              UserProjectIntegrator::TargetIntegrator.remove_copy_xcframeworks_script_phase_from_target(native_target)
-            else
-              UserProjectIntegrator::TargetIntegrator.create_or_update_copy_xcframeworks_script_phase_to_target(
-                native_target, script_path, input_paths_by_config, output_paths_by_config
-              )
-            end
-          end
-        end
-      end
-    end
-  end
-end
+#               output_file_list_path = target.copy_xcframeworks_script_output_files_path
+#               output_file_list_relative_path = "${PODS_ROOT}/#{output_file_list_path.relative_path_from(target.sandbox.root)}"
+#               output_paths_key = UserProjectIntegrator::TargetIntegrator::XCFileListConfigKey.new(output_file_list_path, output_file_list_relative_path)
+#               output_paths_by_config[output_paths_key] = xcframeworks.map do |xcf|
+#                 "#{Target::BuildSettings::XCFRAMEWORKS_BUILD_DIR_VARIABLE}/#{xcf.name}"
+#               end
+#             end
+
+#             if xcframeworks.empty?
+#               UserProjectIntegrator::TargetIntegrator.remove_copy_xcframeworks_script_phase_from_target(native_target)
+#             else
+#               UserProjectIntegrator::TargetIntegrator.create_or_update_copy_xcframeworks_script_phase_to_target(
+#                 native_target, script_path, input_paths_by_config, output_paths_by_config
+#               )
+#             end
+#           end
+#         end
+#       end
+#     end
+#   end
+# end

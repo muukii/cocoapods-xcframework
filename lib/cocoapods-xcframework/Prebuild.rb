@@ -112,7 +112,9 @@ module Pod
           next
         end
 
-        output_path = sandbox.framework_folder_path_for_target_name(target.name)
+        output_path = Pathname.new(sandbox.root).realpath + "../" + target.name
+        
+        # output_path = sandbox.framework_folder_path_for_target_name(target.name)
         output_path.mkpath unless output_path.exist?
 
         Pod::Prebuild.build_xcframework(
@@ -122,6 +124,7 @@ module Pod
         )
 
         # save the resource paths for later installing
+
         if target.static_framework? and !target.resource_paths.empty?
           framework_path = output_path + target.framework_name
           standard_sandbox_path = sandbox.standard_sanbox_path
@@ -148,39 +151,40 @@ module Pod
           Pod::Prebuild::Passer.resources_to_copy_for_static_framework[target.name] = path_objects
         end
       end
+
       # Pod::Prebuild.remove_build_dir(sandbox_path)
 
       # copy vendored libraries and frameworks
-      targets.each do |target|
-        root_path = self.sandbox.pod_dir(target.name)
-        target_folder = sandbox.framework_folder_path_for_target_name(target.name)
+      # targets.each do |target|
+      #   root_path = self.sandbox.pod_dir(target.name)
+      #   target_folder = sandbox.framework_folder_path_for_target_name(target.name)
 
-        # If target shouldn't build, we copy all the original files
-        # This is for target with only .a and .h files
-        if not target.should_build?
-          Prebuild::Passer.target_names_to_skip_integration_framework << target.name
-          FileUtils.cp_r(root_path, target_folder, :remove_destination => true)
-          next
-        end
+      #   # If target shouldn't build, we copy all the original files
+      #   # This is for target with only .a and .h files
+      #   if not target.should_build?
+      #     Prebuild::Passer.target_names_to_skip_integration_framework << target.name
+      #     FileUtils.cp_r(root_path, target_folder, :remove_destination => true)
+      #     next
+      #   end
 
-        target.spec_consumers.each do |consumer|
-          file_accessor = Sandbox::FileAccessor.new(root_path, consumer)
-          lib_paths = file_accessor.vendored_frameworks || []
-          lib_paths += file_accessor.vendored_libraries
-          # @TODO dSYM files
-          lib_paths.each do |lib_path|
-            relative = lib_path.relative_path_from(root_path)
-            destination = target_folder + relative
-            destination.dirname.mkpath unless destination.dirname.exist?
-            FileUtils.cp_r(lib_path, destination, :remove_destination => true)
-          end
-        end
-      end
+      #   target.spec_consumers.each do |consumer|
+      #     file_accessor = Sandbox::FileAccessor.new(root_path, consumer)
+      #     lib_paths = file_accessor.vendored_frameworks || []
+      #     lib_paths += file_accessor.vendored_libraries
+      #     # @TODO dSYM files
+      #     lib_paths.each do |lib_path|
+      #       relative = lib_path.relative_path_from(root_path)
+      #       destination = target_folder + relative
+      #       destination.dirname.mkpath unless destination.dirname.exist?
+      #       FileUtils.cp_r(lib_path, destination, :remove_destination => true)
+      #     end
+      #   end
+      # end
 
       # save the pod_name for prebuild framwork in sandbox
-      targets.each do |target|
-        sandbox.save_pod_name_for_target target
-      end
+      # targets.each do |target|
+      #   sandbox.save_pod_name_for_target target
+      # end
 
       # Remove useless files
       # remove useless pods
@@ -193,18 +197,23 @@ module Pod
         path.rmtree if path.exist?
       end
 
-      if not Podfile::DSL.dont_remove_source_code
-        # only keep manifest.lock and framework folder in _Prebuild
-        to_remain_files = ["Manifest.lock", File.basename(existed_framework_folder)]
-        to_delete_files = sandbox_path.children.select do |file|
-          filename = File.basename(file)
-          not to_remain_files.include?(filename)
-        end
-        to_delete_files.each do |path|
-          path.rmtree if path.exist?
-        end
-      else
-        # just remove the tmp files
+      # if not Podfile::DSL.dont_remove_source_code
+      #   # only keep manifest.lock and framework folder in _Prebuild
+      #   to_remain_files = ["Manifest.lock", File.basename(existed_framework_folder)]
+      #   to_delete_files = sandbox_path.children.select do |file|
+      #     filename = File.basename(file)
+      #     not to_remain_files.include?(filename)
+      #   end
+      #   to_delete_files.each do |path|
+      #     path.rmtree if path.exist?
+      #   end
+      # else
+      #   # just remove the tmp files
+      #   path = sandbox.root + "Manifest.lock.tmp"
+      #   path.rmtree if path.exist?
+      # end
+
+      instance_eval do
         path = sandbox.root + "Manifest.lock.tmp"
         path.rmtree if path.exist?
       end
