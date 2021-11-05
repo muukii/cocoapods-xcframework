@@ -80,8 +80,8 @@ Pod::HooksManager.register("cocoapods-xcframework", :pre_install) do |installer_
   # if !update
   #   binary_installer.install_when_cache_hit!
   # else
-    # binary_installer.update = update
-    # binary_installer.repo_update = repo_update
+    binary_installer.update = update
+    binary_installer.repo_update = repo_update
     binary_installer.install!
   # end
 

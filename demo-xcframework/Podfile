@@ -8,15 +8,15 @@ target "demo" do
   pod "Alamofire", binary: true
   pod "SwiftDate", binary: true
   pod "MondrianLayout", binary: true
+  pod "Brightroom", binary: true
 end
 
 target "ModuleA" do
   platform :ios, "12.0"
   pod "MondrianLayout", binary: true
-  pod "Brightroom"  
 end
 
 target "ModuleB" do
   platform :ios, "12.0"
-  pod "Reusable"
+  pod "Reusable", binary: true
 end

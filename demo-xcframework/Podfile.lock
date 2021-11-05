@@ -14,7 +14,7 @@ PODS:
   - Brightroom/UI-Crop (2.3.3):
     - Brightroom/Engine
     - Verge/Store (>= 8.9.1)
-  - MondrianLayout (0.1.0)
+  - MondrianLayout (0.3.0)
   - Reusable (4.1.2):
     - Reusable/Storyboard (= 4.1.2)
     - Reusable/View (= 4.1.2)
@@ -46,12 +46,12 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
   Brightroom: 9cde86b5e7bbfa89e7a53880c1add94f946d2301
-  MondrianLayout: fc0923510d99fe6b8455351340e8476d927ffe7a
+  MondrianLayout: 76a7eb09a40667523fecafbf43c3f867120ad27c
   Reusable: 6bae6a5e8aa793c9c441db0213c863a64bce9136
   SwiftDate: 72d28954e8e1c6c1c0f917ccc8005e4f83c7d4b2
   TransitionPatch: c02b48b1429255b14ef82b7e411034e0958b9681
   Verge: 052910fb8112128687695f238aaba5770a0a8b04
 
-PODFILE CHECKSUM: 1859ac2fd1df0ed91635fe348769673f87aded6b
+PODFILE CHECKSUM: e89067d0524ca7d1e4e7acb3bcc23c1a8b38b899
 
 COCOAPODS: 1.11.2
