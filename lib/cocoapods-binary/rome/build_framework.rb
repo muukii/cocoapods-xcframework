@@ -146,10 +146,7 @@ module Pod
     def self.build_xcframework(
       sandbox_root_path:,
       target:,
-      output_path:,
-      bitcode_enabled:,
-      custom_build_options:,
-      custom_build_options_simulator:
+      output_path:
     )
       Pod::UI.puts "Build XCFramework"
 

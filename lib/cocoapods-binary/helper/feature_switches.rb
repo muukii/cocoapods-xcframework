@@ -26,12 +26,12 @@ module Pod
         end
 
         # patched content
-        should_prebuild = Pod::Podfile::DSL.prebuild_all
+        should_prebuild = false
         local = false
 
         options = args.last
-        if options.is_a?(Hash) and options[Pod::Prebuild.keyword] != nil
-          should_prebuild = options[Pod::Prebuild.keyword]
+        if options.is_a?(Hash) and options[:binary] != nil
+          should_prebuild = options[:binary]
           local = (options[:path] != nil)
         end
 

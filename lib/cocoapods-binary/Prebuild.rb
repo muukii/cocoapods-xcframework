@@ -64,7 +64,6 @@ module Pod
       # build options
       sandbox_path = sandbox.root
       existed_framework_folder = sandbox.generate_framework_path
-      bitcode_enabled = Pod::Podfile::DSL.bitcode_enabled
 
       targets = []
 
@@ -102,11 +101,6 @@ module Pod
         targets = self.pod_targets
       end
 
-      if Pod::Podfile::DSL.forbidden_dependency_binary
-        forbidden_dependency_targets = targets.map { |t| t.recursive_dependent_targets }.flatten.uniq || []
-        targets = targets - forbidden_dependency_targets
-      end
-
       targets = targets.reject { |pod_target| sandbox.local?(pod_target.pod_name) }
 
       # build!
@@ -124,10 +118,7 @@ module Pod
         Pod::Prebuild.build_xcframework(
           sandbox_root_path: sandbox_path,
           target: target,
-          output_path: output_path,
-          bitcode_enabled: bitcode_enabled,
-          custom_build_options: Podfile::DSL.custom_build_options,
-          custom_build_options_simulator: Podfile::DSL.custom_build_options_simulator
+          output_path: output_path
         )
 
         # save the resource paths for later installing

@@ -1,20 +1,15 @@
 module Pod
-  class Prebuild
-    def self.keyword
-      :binary
-    end
-  end
 
   class Podfile
     class TargetDefinition
 
       ## --- option for setting using prebuild framework ---
       def parse_prebuild_framework(name, requirements)
-        should_prebuild = Pod::Podfile::DSL.prebuild_all
+        should_prebuild = false
 
         options = requirements.last
-        if options.is_a?(Hash) && options[Pod::Prebuild.keyword] != nil
-          should_prebuild = options.delete(Pod::Prebuild.keyword)
+        if options.is_a?(Hash) && options[:binary] != nil
+          should_prebuild = options.delete(:binary)
           requirements.pop if options.empty?
         end
 
@@ -72,14 +67,8 @@ module Pod
 
         # filter prebuild
         prebuild_names = target_definition.prebuild_framework_pod_names
-        if not Podfile::DSL.prebuild_all
-          targets = targets.select { |pod_target| prebuild_names.include?(pod_target.pod_name) }
-        end
-
-        if not Podfile::DSL.forbidden_dependency_binary
-          dependency_targets = targets.map { |t| t.recursive_dependent_targets }.flatten.uniq || []
-          targets = (targets + dependency_targets).uniq
-        end
+        
+        targets = targets.select { |pod_target| prebuild_names.include?(pod_target.pod_name) }
 
         # filter should not prebuild
         explict_should_not_names = target_definition.should_not_prebuild_framework_pod_names
