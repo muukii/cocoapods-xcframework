@@ -16,6 +16,5 @@ module Pod
     def standard_sanbox_path
       self.root.parent
     end
-
   end
 end

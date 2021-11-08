@@ -75,8 +75,10 @@ module Pod
 
         all += targets
       end
-        all = all.reject { |pod_target| sandbox.local?(pod_target.pod_name) }
-        all.uniq)
+
+      # remove development pods from prebuild target
+        # all = all.reject { |pod_target| sandbox.local?(pod_target.pod_name) }
+        # all.uniq)
     end
 
     # the root names who needs prebuild, including dependency pods.

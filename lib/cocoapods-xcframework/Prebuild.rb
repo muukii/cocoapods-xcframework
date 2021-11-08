@@ -4,7 +4,6 @@ require_relative "helper/target_checker"
 # patch prebuild ability
 module Pod
   class Installer
-
     public
 
     # Build the needed framework files
@@ -14,7 +13,7 @@ module Pod
       sandbox_path = sandbox.root
 
       targets = []
-     
+
       targets = self.pod_targets
 
       # targets = targets.reject { |pod_target| sandbox.local?(pod_target.pod_name) }
@@ -29,7 +28,7 @@ module Pod
         end
 
         output_path = Pathname.new(sandbox.standard_sanbox_path).realpath + target.name
-        
+
         output_path.mkpath unless output_path.exist?
 
         Pod::Prebuild.build_xcframework(
@@ -37,9 +36,8 @@ module Pod
           target: target,
           output_path: output_path,
         )
-
       end
-     
+
       instance_eval do
         path = sandbox.root + "Manifest.lock.tmp"
         path.rmtree if path.exist?

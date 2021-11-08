@@ -78,11 +78,11 @@ Pod::HooksManager.register("cocoapods-xcframework", :pre_install) do |installer_
   binary_installer = Pod::Installer.new(prebuild_sandbox, prebuild_podfile, lockfile)
 
   # if !update
-    # binary_installer.install_when_cache_hit!
+  # binary_installer.install_when_cache_hit!
   # else
-    binary_installer.update = update
-    binary_installer.repo_update = repo_update
-    binary_installer.install!
+  binary_installer.update = update
+  binary_installer.repo_update = repo_update
+  binary_installer.install!
   # end
 
   # reset the environment

@@ -149,7 +149,6 @@ def xcodebuild(
 
   log = `#{command} 2>&1`
 
-
   exit_code = $?.exitstatus  # Process::Status
   is_succeed = (exit_code == 0)
 

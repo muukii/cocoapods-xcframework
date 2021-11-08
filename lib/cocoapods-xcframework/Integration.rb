@@ -3,7 +3,7 @@ require_relative "helper/feature_switches"
 require_relative "helper/prebuild_sandbox"
 require_relative "helper/names"
 require_relative "helper/target_checker"
-require 'pp'
+require "pp"
 
 # Let cocoapods use the prebuild framework files in install process.
 #
@@ -11,11 +11,11 @@ require 'pp'
 #
 module Pod
   class Installer
-  
+
     # Modify specification to use only the prebuild framework after analyzing
     old_method2 = instance_method(:resolve_dependencies)
     define_method(:resolve_dependencies) do
-    
+
       # call original
       old_method2.bind(self).()
 
@@ -42,7 +42,6 @@ module Pod
       Pod::UI.puts "Modify specs"
 
       prebuilt_specs.each do |spec|
-
         p spec
         Pod::UI.puts "Before"
         pp spec.attributes_hash
@@ -51,18 +50,16 @@ module Pod
         # get_corresponding_targets
         targets = Pod.fast_get_targets_for_pod_name(spec.root.name, self.pod_targets, cache)
         targets.each do |target|
-
           framework_name = target.name
 
           # case of the spec has module_name property
-          if spec.attributes_hash["module_name"] != nil 
+          if spec.attributes_hash["module_name"] != nil
             framework_name = spec.attributes_hash["module_name"].to_s
           end
 
-          if spec.parent != nil && spec.parent.attributes_hash["module_name"] != nil 
+          if spec.parent != nil && spec.parent.attributes_hash["module_name"] != nil
             framework_name = spec.parent.attributes_hash["module_name"].to_s
           end
-
 
           platform = target.platform.name.to_s
           if spec.attributes_hash[platform] == nil
@@ -108,9 +105,9 @@ module Pod
         # to avoid the warning of missing license
         spec.attributes_hash["license"] = {}
 
-        Pod::UI.puts "After.Spec"        
+        Pod::UI.puts "After.Spec"
         pp spec.attributes_hash
-        Pod::UI.puts "After.Spec.parent"   
+        Pod::UI.puts "After.Spec.parent"
         pp spec.parent.attributes_hash unless spec.parent.nil?
       end
     end
@@ -124,7 +121,6 @@ module Pod
       # \copy from original
 
       if self.prebuild_pod_names.include? pod_name
-
       else
         pod_installer.install!
       end
