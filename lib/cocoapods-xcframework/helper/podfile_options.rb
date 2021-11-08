@@ -82,8 +82,6 @@ module Pod
         # all = all.reject { |pod_target| sandbox.local?(pod_target.pod_name) }
         all.uniq
       )
-
-      puts "Hoge", @prebuild_pod_targets
     end
 
     # the root names who needs prebuild, including dependency pods.

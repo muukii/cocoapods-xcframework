@@ -1,5 +1,6 @@
 require_relative "rome/build_framework"
 require_relative "helper/target_checker"
+require 'concurrent'
 
 # patch prebuild ability
 module Pod
@@ -23,23 +24,44 @@ module Pod
       targets.each do |t|
         Pod::UI.puts "📦 #{t}"
       end
+
+      tasks = targets
+        .filter {|target|
+          target.should_build?
+        }
+        .map { |target|
+          Concurrent::Promises.future {
+            output_path = Pathname.new(sandbox.standard_sanbox_path).realpath + target.name
+
+            output_path.mkpath unless output_path.exist?
+
+            Pod::Prebuild.build_xcframework(
+              sandbox_root_path: sandbox_path,
+              target: target,
+              output_path: output_path,
+            )
+          }
+        }
+
+      Concurrent::Promises.zip(*tasks).value!
+
       # Pod::Prebuild.remove_build_dir(sandbox_path)
-      targets.each do |target|
-        if !target.should_build?
-          UI.puts "Prebuilding #{target.label}"
-          next
-        end
+      # targets.each do |target|
+      #   if !target.should_build?
+      #     UI.puts "Prebuilding #{target.label}"
+      #     next
+      #   end
 
-        output_path = Pathname.new(sandbox.standard_sanbox_path).realpath + target.name
+      #   output_path = Pathname.new(sandbox.standard_sanbox_path).realpath + target.name
 
-        output_path.mkpath unless output_path.exist?
+      #   output_path.mkpath unless output_path.exist?
 
-        Pod::Prebuild.build_xcframework(
-          sandbox_root_path: sandbox_path,
-          target: target,
-          output_path: output_path,
-        )
-      end
+      #   Pod::Prebuild.build_xcframework(
+      #     sandbox_root_path: sandbox_path,
+      #     target: target,
+      #     output_path: output_path,
+      #   )
+      # end
 
       instance_eval do
         path = sandbox.root + "Manifest.lock.tmp"

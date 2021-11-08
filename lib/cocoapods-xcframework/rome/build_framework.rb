@@ -55,6 +55,7 @@ def createXCFramewrok(
     destination: "generic/platform=iOS",
     sdk: "iphoneos",
     archivePath: "#{buildDirectory}/#{moduleName}/ios.xcarchive",
+    derivedDataPath: "#{buildDirectory}/#{moduleName}",
     otherOptions: options,
   )
 
@@ -64,6 +65,7 @@ def createXCFramewrok(
     destination: "generic/platform=iOS Simulator",
     sdk: "iphonesimulator",
     archivePath: "#{buildDirectory}/#{moduleName}/ios-simulator.xcarchive",
+    derivedDataPath: "#{buildDirectory}/#{moduleName}",
     otherOptions: options,
   )
 
@@ -109,7 +111,7 @@ def createXCFramewrok(
 
   command = "xcodebuild -create-xcframework #{args.join(" \\\n")}"
 
-  puts command
+  # puts command
 
   log = `#{command}`
 
@@ -139,13 +141,14 @@ def xcodebuild(
   destination:,
   sdk:,
   archivePath:,
+  derivedDataPath:,
   otherOptions:
 )
-  args = %W(-project "#{projectName}" -scheme "#{scheme}" -configuration "#{CONFIGURATION}" -sdk "#{sdk}" -destination "#{destination}" -archivePath "#{archivePath}")
+  args = %W(-project "#{projectName}" -scheme "#{scheme}" -configuration "#{CONFIGURATION}" -sdk "#{sdk}" -destination "#{destination}" -archivePath "#{archivePath}" -derivedDataPath "#{derivedDataPath}")
   args += otherOptions
   command = "xcodebuild archive #{args.join(" ")}"
 
-  puts command
+  # puts command
 
   log = `#{command} 2>&1`
 
