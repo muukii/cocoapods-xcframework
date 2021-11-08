@@ -74,7 +74,8 @@ def createXCFramewrok(
   archiveRoot = buildDirectory
   project = projectName
 
-  output = "#{outputPath}/#{moduleName}.xcframework"
+  output = "#{buildDirectory}/Artifacts/#{moduleName}.xcframework"
+  resolved_output = "#{outputPath}/#{moduleName}.xcframework"
 
   args = %W(-output "#{output}")
 
@@ -115,8 +116,10 @@ def createXCFramewrok(
 
   log = `#{command}`
 
-  if File.exist? output
-    Pod::UI.puts "🚜 #{moduleName} -> ✅ Success #{output}\n"
+  FileUtils.copy_entry output, resolved_output
+
+  if File.exist? resolved_output
+    Pod::UI.puts "🚜 #{moduleName} -> ✅ Success #{resolved_output}\n"
   else
     Pod::UI.puts "🚜 #{moduleName} -> ❌ Failue\n"
   end

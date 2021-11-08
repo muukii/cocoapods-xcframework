@@ -1,5 +1,8 @@
 PODS:
   - Alamofire (5.4.4)
+  - Capturer (0.0.1):
+    - Capturer/Basic (= 0.0.1)
+  - Capturer/Basic (0.0.1)
   - lottie-ios (3.2.3)
   - MondrianLayout (0.3.0)
   - Reusable (4.1.2):
@@ -17,6 +20,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
+  - Capturer (from `submodules/Capturer`)
   - lottie-ios
   - MondrianLayout
   - Reusable
@@ -37,8 +41,13 @@ SPEC REPOS:
     - Texture
     - TextureBridging
 
+EXTERNAL SOURCES:
+  Capturer:
+    :path: submodules/Capturer
+
 SPEC CHECKSUMS:
   Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
+  Capturer: 4f1492661fc372266cded9ab82f2d1f4899819bd
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
   MondrianLayout: 76a7eb09a40667523fecafbf43c3f867120ad27c
   Reusable: 6bae6a5e8aa793c9c441db0213c863a64bce9136
@@ -47,6 +56,6 @@ SPEC CHECKSUMS:
   Texture: 2e8ab2519452515f7f5a520f5a8f7e0a413abfa3
   TextureBridging: b4035a6a9e64d061f3238f3dc08abd36b8eff8f7
 
-PODFILE CHECKSUM: 7a14e957f38083638ee9bb6219f42106674841bb
+PODFILE CHECKSUM: 27828a14948c2a38fb01485f309d0b8b1e576cb7
 
 COCOAPODS: 1.11.2
