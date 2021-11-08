@@ -89,7 +89,9 @@ module Pod
         deleteProperty(spec: spec, name: "header_dir")
         deleteProperty(spec: spec, name: "exclude_files")
         deleteProperty(spec: spec, name: "module_name")
-               
+        deleteProperty(spec: spec, name: "public_header_files")
+        deleteProperty(spec: spec, name: "compiler_flags")
+
         # to remove the resurce bundle target.
         # When specify the "resource_bundles" in podspec, xcode will generate a bundle
         # target after pod install. But the bundle have already built when the prebuit
@@ -106,8 +108,10 @@ module Pod
         # to avoid the warning of missing license
         spec.attributes_hash["license"] = {}
 
-        Pod::UI.puts "After"
+        Pod::UI.puts "After.Spec"        
         pp spec.attributes_hash
+        Pod::UI.puts "After.Spec.parent"   
+        pp spec.parent.attributes_hash unless spec.parent.nil?
       end
     end
 
