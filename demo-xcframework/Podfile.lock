@@ -1,19 +1,6 @@
 PODS:
   - Alamofire (5.4.4)
-  - Brightroom (2.3.3):
-    - Brightroom/Engine (= 2.3.3)
-    - Brightroom/UI-Classic (= 2.3.3)
-    - Brightroom/UI-Crop (= 2.3.3)
-    - Verge/Store (>= 8.9.1)
-  - Brightroom/Engine (2.3.3):
-    - Verge/Store (>= 8.9.1)
-  - Brightroom/UI-Classic (2.3.3):
-    - Brightroom/Engine
-    - TransitionPatch
-    - Verge/Store (>= 8.9.1)
-  - Brightroom/UI-Crop (2.3.3):
-    - Brightroom/Engine
-    - Verge/Store (>= 8.9.1)
+  - lottie-ios (3.2.3)
   - MondrianLayout (0.3.0)
   - Reusable (4.1.2):
     - Reusable/Storyboard (= 4.1.2)
@@ -23,48 +10,43 @@ PODS:
   - StackScrollView (1.6.1)
   - SwiftDate (6.3.1)
   - Texture/Core (3.1.0)
+  - Texture/Video (3.1.0):
+    - Texture/Core
   - TextureBridging (3.0.1):
     - Texture/Core (~> 3)
-  - TransitionPatch (1.0.2)
-  - Verge/ObjcBridge (8.12.2)
-  - Verge/Store (8.12.2):
-    - Verge/ObjcBridge
 
 DEPENDENCIES:
   - Alamofire
-  - Brightroom
+  - lottie-ios
   - MondrianLayout
   - Reusable
   - StackScrollView
   - SwiftDate
   - Texture/Core
+  - Texture/Video
   - TextureBridging
 
 SPEC REPOS:
   trunk:
     - Alamofire
-    - Brightroom
+    - lottie-ios
     - MondrianLayout
     - Reusable
     - StackScrollView
     - SwiftDate
     - Texture
     - TextureBridging
-    - TransitionPatch
-    - Verge
 
 SPEC CHECKSUMS:
   Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
-  Brightroom: 9cde86b5e7bbfa89e7a53880c1add94f946d2301
+  lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
   MondrianLayout: 76a7eb09a40667523fecafbf43c3f867120ad27c
   Reusable: 6bae6a5e8aa793c9c441db0213c863a64bce9136
   StackScrollView: 147b641af68be5e230d291b898218b9386cf5329
   SwiftDate: 72d28954e8e1c6c1c0f917ccc8005e4f83c7d4b2
   Texture: 2e8ab2519452515f7f5a520f5a8f7e0a413abfa3
   TextureBridging: b4035a6a9e64d061f3238f3dc08abd36b8eff8f7
-  TransitionPatch: c02b48b1429255b14ef82b7e411034e0958b9681
-  Verge: 052910fb8112128687695f238aaba5770a0a8b04
 
-PODFILE CHECKSUM: d76d4bd646cd654038b87f1acf4697c39e1a8208
+PODFILE CHECKSUM: 7a14e957f38083638ee9bb6219f42106674841bb
 
 COCOAPODS: 1.11.2

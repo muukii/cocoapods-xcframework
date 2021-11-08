@@ -3,6 +3,7 @@ require_relative "helper/feature_switches"
 require_relative "helper/prebuild_sandbox"
 require_relative "helper/names"
 require_relative "helper/target_checker"
+require 'pp'
 
 # Let cocoapods use the prebuild framework files in install process.
 #
@@ -38,31 +39,57 @@ module Pod
         self.prebuild_pod_names.include? spec.root.name
       end)
 
+      Pod::UI.puts "Modify specs"
+
       prebuilt_specs.each do |spec|
+
+        p spec
+        Pod::UI.puts "Before"
+        pp spec.attributes_hash
 
         # Use the prebuild framworks as vendered frameworks
         # get_corresponding_targets
         targets = Pod.fast_get_targets_for_pod_name(spec.root.name, self.pod_targets, cache)
         targets.each do |target|
 
+          framework_name = target.name
+
+          # case of the spec has module_name property
+          if spec.attributes_hash["module_name"] != nil 
+            framework_name = spec.attributes_hash["module_name"].to_s
+          end
+
+          if spec.parent != nil && spec.parent.attributes_hash["module_name"] != nil 
+            framework_name = spec.parent.attributes_hash["module_name"].to_s
+          end
+
+
           platform = target.platform.name.to_s
           if spec.attributes_hash[platform] == nil
             spec.attributes_hash[platform] = {}
           end
-          spec.attributes_hash[platform]["vendored_frameworks"] = ["#{target.name}.xcframework"]
-          spec.attributes_hash[platform]["preserve_paths"] = ["#{target.name}.xcframework"]
+          spec.attributes_hash[platform]["vendored_frameworks"] = ["#{framework_name}.xcframework"]
+          spec.attributes_hash[platform]["preserve_paths"] = ["#{framework_name}.xcframework"]
         end
         # Clean the source files
         # we just add the prebuilt framework to specific platform and set no source files
         # for all platform, so it doesn't support the sence that 'a pod perbuild for one
         # platform and not for another platform.'
-        spec.attributes_hash["source_files"] = []
-        ["ios", "watchos", "tvos", "osx"].each do |plat|
-          if spec.attributes_hash[plat] != nil
-            spec.attributes_hash[plat]["source_files"] = []
+
+        def deleteProperty(spec:, name:)
+          spec.attributes_hash.delete(name)
+          ["ios", "watchos", "tvos", "osx"].each do |plat|
+            if spec.attributes_hash[plat] != nil
+              spec.attributes_hash[plat].delete(name)
+            end
           end
         end
 
+        deleteProperty(spec: spec, name: "source_files")
+        deleteProperty(spec: spec, name: "header_dir")
+        deleteProperty(spec: spec, name: "exclude_files")
+        deleteProperty(spec: spec, name: "module_name")
+               
         # to remove the resurce bundle target.
         # When specify the "resource_bundles" in podspec, xcode will generate a bundle
         # target after pod install. But the bundle have already built when the prebuit
@@ -78,6 +105,9 @@ module Pod
 
         # to avoid the warning of missing license
         spec.attributes_hash["license"] = {}
+
+        Pod::UI.puts "After"
+        pp spec.attributes_hash
       end
     end
 

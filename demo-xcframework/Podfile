@@ -8,21 +8,23 @@ target "demo" do
   pod "Alamofire", binary: true
   pod "SwiftDate", binary: true
   pod "MondrianLayout", binary: true
-  pod "Texture/Core"
+  pod "Texture/Core", binary: true
+  pod "Texture/Video", binary: true
   pod "TextureBridging"
-  pod "Brightroom"
+#  pod "Brightroom"
   pod "Reusable", binary: true
-  pod "StackScrollView", binary: true
+  pod "StackScrollView"
+  pod "lottie-ios", binary: true
 end
 
 target "ModuleA" do
   platform :ios, "12.0"
-  pod "MondrianLayout", binary: true
+#  pod "MondrianLayout", binary: true
 end
 
 target "ModuleB" do
   platform :ios, "12.0"
-  pod "Reusable", binary: true
+#  pod "Reusable", binary: true
 end
 
 post_install do |installer|
