@@ -20,6 +20,9 @@ module Pod
 
       # build!
       Pod::UI.puts "Prebuild frameworks (total #{targets.count})"
+      targets.each do |t|
+        Pod::UI.puts "📦 #{t}"
+      end
       # Pod::Prebuild.remove_build_dir(sandbox_path)
       targets.each do |target|
         if !target.should_build?

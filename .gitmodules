@@ -1,0 +1,3 @@
+[submodule "demo-xcframework/submodules/Capturer"]
+	path = demo-xcframework/submodules/Capturer
+	url = https://github.com/muukii/Capturer.git

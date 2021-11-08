@@ -4,6 +4,7 @@ module Pod
 
       ## --- option for setting using prebuild framework ---
       def parse_prebuild_framework(name, requirements)
+
         should_prebuild = false
 
         options = requirements.last
@@ -17,6 +18,7 @@ module Pod
       end
 
       def set_prebuild_for_pod(pod_name, should_prebuild)
+
         if should_prebuild == true
           @prebuild_framework_pod_names ||= []
           @prebuild_framework_pod_names.push pod_name
@@ -39,6 +41,7 @@ module Pod
         if parent != nil and parent.kind_of? TargetDefinition
           names += parent.should_not_prebuild_framework_pod_names
         end
+        # puts "⚠️", names
         names
       end
 
@@ -79,6 +82,8 @@ module Pod
         # all = all.reject { |pod_target| sandbox.local?(pod_target.pod_name) }
         all.uniq
       )
+
+      puts "Hoge", @prebuild_pod_targets
     end
 
     # the root names who needs prebuild, including dependency pods.

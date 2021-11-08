@@ -73,6 +73,8 @@ Pod::HooksManager.register("cocoapods-xcframework", :pre_install) do |installer_
   # get the podfile for prebuild
   prebuild_podfile = Pod::Podfile.from_ruby(podfile.defined_in_file)
 
+  pp prebuild_podfile
+
   # install
   lockfile = installer_context.lockfile
   binary_installer = Pod::Installer.new(prebuild_sandbox, prebuild_podfile, lockfile)

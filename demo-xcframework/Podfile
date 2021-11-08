@@ -15,6 +15,7 @@ target "demo" do
   pod "Reusable", binary: true
   pod "StackScrollView"
   pod "lottie-ios", binary: true
+  pod "Capturer", path: "submodules/Capturer", binary: true
 end
 
 target "ModuleA" do
