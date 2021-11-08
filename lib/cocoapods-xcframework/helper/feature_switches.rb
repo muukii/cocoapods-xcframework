@@ -32,11 +32,13 @@ module Pod
         options = args.last
         if options.is_a?(Hash) and options[:binary] != nil
           should_prebuild = options[:binary]
+          local = (options[:path] != nil)
         end
 
-        if should_prebuild
+        if should_prebuild and (not local)
           old_method.bind(self).(name, *args)
         end
+        
       end
     end
   end
